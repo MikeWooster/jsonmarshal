@@ -1,0 +1,87 @@
+name: Python package and deploy
+
+on:
+  push:
+    paths:
+      - "jsonmarshal/**"
+      - "setup.py"
+      - "VERSION"
+
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox
+      - name: Lint Checks
+        run: |
+          tox -e lint
+      - name: Unit Tests
+        run: |
+          tox -e unittest
+
+  deploy_rc:
+    needs: test
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/rc/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set Up Build
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[deploy]
+      - name: Update RC Version
+        run: |
+          python scripts/update_version.py
+      - name: Build Dist
+        run: |
+          rm -rf dist/*
+          python setup.py sdist
+      - name: Publish
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          python scripts/upload_new_package.py
+
+  deploy:
+    needs: test
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set Up Build
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[deploy]
+      - name: Build Dist
+        run: |
+          rm -rf dist/*
+          python setup.py sdist
+      - name: Publish
+          env:
+            TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+            TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          run: |
+            python scripts/upload_new_package.py

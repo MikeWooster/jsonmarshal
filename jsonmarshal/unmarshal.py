@@ -1,6 +1,8 @@
 import dataclasses
+from enum import Enum
 from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
 
+from jsonmarshal.exceptions import UnmarshalError
 from jsonmarshal.utils.typing import JsonType
 
 T = TypeVar("T")
@@ -8,32 +10,6 @@ T = TypeVar("T")
 NoneType = type(None)
 
 PRIMITIVES = {str, int, float, NoneType}
-
-
-
-def unmarshal_response(schema: Generic[T]):
-    """Decorator to unmarshal the response into the provided dataclass."""
-
-    def decorator(func) -> T:
-        def wrap(*args, **kwargs) -> T:
-            response = func(*args, **kwargs)
-            return unmarshal(response, schema)
-
-        return wrap
-
-    return decorator
-
-
-class UnmarshalError(Exception):
-    pass
-
-
-class SchemaStart:
-    pass
-
-
-class SchemaEnd:
-    pass
 
 
 def unmarshal(response: JsonType, schema: Generic[T]) -> T:
@@ -57,13 +33,33 @@ class ResultContainer:
 
         if dataclasses.is_dataclass(self.schema):
             return dict
+
         if self.schema is None:
             return NoneType
-        return self.schema.__origin__
+
+        try:
+            if issubclass(self.schema, Enum):
+                return Enum
+        except TypeError:
+            # Cant check for subclasses when self.schema is not a class
+            pass
+
+        # The schema hasn't matched any previous check.
+        # assuming it is a typing.* type which can be determined
+        # from the __origin__ attribute
+        try:
+            return self.schema.__origin__
+        except AttributeError:
+            raise UnmarshalError(f"Schema type '{self.schema}' is not currently supported.")
 
     @property
     def item_type(self):
-        return type(self.data)
+        if self.schema_type is Union:
+            # We have to use the type of the data itself
+            # and rely upon another method validating the union is correct
+            return type(self.data)
+        # We assume that the schema has been defined correctly, and use that type
+        return self.schema_type
 
     @property
     def inner_schema(self):
@@ -77,6 +73,32 @@ class ResultContainer:
     def data_keys(self) -> List[str]:
         return list(self.data.keys())
 
+    def validate_schema(self):
+        # Validate that the stored data is of the expected type as specified by the user.
+        if self.cleaned:
+            return
+
+        if self.schema_type in [NoneType, Enum]:
+            # Special types that don't get cleaned automatically
+            return
+
+        errmsg = "Invalid schema. schema = {schema}, data = {data}".format(
+            schema=self.schema, data=type(self.data)
+        )
+
+        if self.schema_type is Union:
+            if dict in self.schema.__args__ or list in self.schema.__args__:
+                # including dict/list in a union type in a schema is invalid.
+                raise UnmarshalError(
+                    "{prefix}. Unions cannot contain dict or list items in a schema.".format(prefix=errmsg)
+                )
+
+            if self.item_type not in self.schema.__args__:
+                raise UnmarshalError(errmsg)
+
+        elif type(self.data) != self.schema_type:
+            raise UnmarshalError(errmsg)
+
 
 class _Unmarshaller:
     def __init__(self, response, schema):
@@ -85,6 +107,7 @@ class _Unmarshaller:
         self.processors: Dict[Any, Callable[[ResultContainer], None]] = {
             list: self.process_list,
             dict: self.process_dict,
+            Enum: self.process_enum,
         }
         # Add each primitive individually
         for t in PRIMITIVES:
@@ -95,7 +118,8 @@ class _Unmarshaller:
             item = self.get_item()
 
             if len(self.result) == 0 and item.cleaned and item.unmarshalled:
-                # If this is the first item and it has already been cleaned then we don't need to do anything
+                # If this is the first item and it has already been cleaned
+                # then we don't need to do anything
                 continue
 
             processor = self.processors[item.item_type]
@@ -107,31 +131,8 @@ class _Unmarshaller:
 
     def get_item(self) -> ResultContainer:
         item = self.result.pop()
-        self.validate_schema(item)
+        item.validate_schema()
         return item
-
-    @staticmethod
-    def validate_schema(item: ResultContainer):
-        if item.cleaned:
-            return
-        if item.schema_type is NoneType:
-            return
-
-        errmsg = "Invalid schema. schema = {schema}, data = {data}".format(
-            schema=item.schema_type, data=item.item_type
-        )
-
-        if item.schema_type is Union:
-            if dict in item.schema.__args__ or list in item.schema.__args__:
-                # including dict/list in a union type in a schema is invalid.
-                raise UnmarshalError(
-                    "{prefix}. Unions cannot contain dict or list items in a schema.".format(prefix=errmsg)
-                )
-
-            if item.item_type not in item.schema.__args__:
-                raise UnmarshalError(errmsg)
-        elif item.item_type != item.schema_type:
-            raise UnmarshalError(errmsg)
 
     def process_list(self, item: ResultContainer):
         # Need to append to an intermediary list in order to preserve the final list order.
@@ -152,12 +153,11 @@ class _Unmarshaller:
             # Go through each known field and fix the keys in the original dictionary
             item = self.clean_item(item)
 
-        if not self.dump:
+        if not self.dump and item.unmarshalled is False:
             # This item has no children, we can safely unmarshal it to the specified datatype
             item.unmarshalled = True
             item.data = item.schema(**item.data)
 
-        item.cleaned = True
         self.result.append(item)
 
     def clean_item(self, item: ResultContainer) -> ResultContainer:
@@ -188,16 +188,30 @@ class _Unmarshaller:
         for data_key, v in item.data.items():
             schema_type = item.schema.__annotations__[data_key]
             child = ResultContainer(data=v, schema=schema_type, parent=data_key)
-            if type(v) not in PRIMITIVES:
+
+            if child.item_type not in PRIMITIVES:
                 self.dump.append(child)
             else:
-                # We want to validate that the primatives are actually using the specified schema
-                self.validate_schema(child)
+                # We want to validate that the primitives are actually using the specified schema
+                child.validate_schema()
 
+        item.cleaned = True
         return item
 
     def process_primitive(self, item: ResultContainer):
         # Just need to set the cleaned flag for a primtive and put it back on the list
+        item.cleaned = True
+        item.unmarshalled = True
+        self.result.append(item)
+
+    def process_enum(self, item: ResultContainer):
+        try:
+            # Try to cast the data value into the specified enum type.
+            v = item.schema(item.data)
+        except ValueError:
+            raise UnmarshalError(f"Unable to use data value '{item.data}' as Enum {item.schema}")
+
+        item.data = v
         item.cleaned = True
         item.unmarshalled = True
         self.result.append(item)
@@ -230,6 +244,12 @@ class _Unmarshaller:
             if prev.schema_type == list:
                 # At this point item should be fully unmarshalled so appending directly
                 # to the prev list will be possible
+                if item.schema_type is dict and item.unmarshalled is False:
+                    # any unmarshalled dictionaries will need unmarshalling
+                    # at this point before appending to the list
+                    item.data = item.schema(**item.data)
+                    item.unmarshalled = True
+
                 prev.data.append(item.data)
                 self.result.append(prev)
                 self.flush_dump()
@@ -264,9 +284,6 @@ class _Unmarshaller:
 
 def is_field_optional(field: dataclasses.Field) -> bool:
     if field.type in PRIMITIVES:
-        return False
-
-    if field.type.__origin__ is not Union:
         return False
 
     # The field is optional if it allows None values in it's union

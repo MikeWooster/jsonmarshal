@@ -4,7 +4,9 @@ from typing import List, Optional, Union
 
 import pytest
 
-from jsonmarshal.json import UnmarshalError, json_field, unmarshal, unmarshal_response
+from jsonmarshal.exceptions import UnmarshalError
+from jsonmarshal.fields import json_field
+from jsonmarshal.unmarshal import unmarshal
 
 
 def test_unmarshal():
@@ -235,6 +237,7 @@ def test_simple_optional_doesnt_require_data_in_json():
         ]
     )
     got = unmarshal(json, Response)
+
     assert got == want
 
 
@@ -254,6 +257,18 @@ def test_simple_enum():
         RED = "RED"
         BLUE = "BLUE"
 
+    json = "RED"
+
+    want = Colour.RED
+    got = unmarshal(json, Colour)
+    assert got == want
+
+
+def test_simple_object_with_enum():
+    class Colour(enum.Enum):
+        RED = "RED"
+        BLUE = "BLUE"
+
     @dataclass
     class Item:
         desc: str
@@ -266,6 +281,30 @@ def test_simple_enum():
         Item(desc="car", colour=Colour.RED),
         Item(desc="boat", colour=Colour.BLUE),
     ]
+    assert got == want
+
+
+def test_simple_invalid_enum():
+    class Colour(enum.Enum):
+        RED = "RED"
+        BLUE = "BLUE"
+
+    json = "GREEN"
+
+    with pytest.raises(UnmarshalError) as exc_info:
+        unmarshal(json, Colour)
+    assert str(exc_info.value) == "Unable to use data value 'GREEN' as Enum <enum 'Colour'>"
+
+
+def test_simple_union():
+    @dataclass
+    class Item:
+        value: Union[str, int]
+
+    json = {"value": 120}
+
+    want = Item(value=120)
+    got = unmarshal(json, Item)
     assert got == want
 
 
@@ -345,40 +384,17 @@ def test_item_not_present_in_json():
     )
 
 
-def test_unmarshal_decorator():
-    @dataclass
-    class Nest:
-        account: str
-        alert: str
-        severity: int = json_field(json="errorSeverity")
+def test_unknown_datatype():
+    class Impossible:
+        pass
 
     @dataclass
-    class Response:
-        val: str
-        iter: List[str]
-        nest: Nest
-        nest_list: List[Nest] = json_field(json="nestList")
+    class Item:
+        first_value: float = json_field(json="firstValue")
+        second_value: Impossible = json_field(json="secondValue")
 
-    @unmarshal_response(Response)
-    def my_func():
-        return {
-            "val": "test",
-            "iter": ["elem1", "elem2"],
-            "nest": {"account": "production", "alert": "something bad", "errorSeverity": 10},
-            "nestList": [
-                {"account": "production", "alert": "something bad", "errorSeverity": 10},
-                {"account": "uat", "alert": "its only uat", "errorSeverity": 3},
-            ],
-        }
+    json = {"firstValue": 123.213, "secondValue": 999}
 
-    want = Response(
-        val="test",
-        iter=["elem1", "elem2"],
-        nest=Nest(account="production", alert="something bad", severity=10),
-        nest_list=[
-            Nest(account="production", alert="something bad", severity=10),
-            Nest(account="uat", alert="its only uat", severity=3),
-        ],
-    )
-    got = my_func()
-    assert got == want
+    with pytest.raises(UnmarshalError) as exc_info:
+        unmarshal(json, Item)
+    assert str(exc_info.value) == f"Schema type '{Impossible}' is not currently supported."
