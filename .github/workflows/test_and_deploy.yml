@@ -1,11 +1,8 @@
-name: Python package and deploy
+name: Python test and deploy
 
 on:
-  push:
-    paths:
-      - "jsonmarshal/**"
-      - "setup.py"
-      - "VERSION"
+  release:
+    types: [created]
 
 
 jobs:
@@ -33,9 +30,8 @@ jobs:
         run: |
           tox -e unittest
 
-  deploy_rc:
+  deploy:
     needs: test
-    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/rc/') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -49,32 +45,7 @@ jobs:
           pip install -e .[deploy]
       - name: Update RC Version
         run: |
-          python scripts/update_version.py
-      - name: Build Dist
-        run: |
-          rm -rf dist/*
-          python setup.py sdist
-      - name: Publish
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          python scripts/upload_new_package.py
-
-  deploy:
-    needs: test
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set Up Build
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .[deploy]
+          python scripts/update_version.py ${GITHUB_REF}
       - name: Build Dist
         run: |
           rm -rf dist/*

@@ -1,58 +1,173 @@
 import enum
 from dataclasses import dataclass
+from datetime import date, datetime
 from typing import List, Optional, Union
+from uuid import UUID
 
 import pytest
+import pytz
 
 from jsonmarshal.exceptions import UnmarshalError
 from jsonmarshal.fields import json_field
 from jsonmarshal.unmarshal import unmarshal
+from tests.fixtures import collected_data
 
 
-def test_unmarshal():
+def test_unmarshal_complex():
+    # Test that tries to combine all the usable types into one test.
+    # exercises the complexity of the unmarshalling.
+    class Size(enum.Enum):
+        SMALL = "SMALL"
+        MEDIUM = "MEDIUM"
+        LARGE = "LARGE"
+
     @dataclass
     class Item:
-        sub_key_1: int = json_field(json="subKey1")
-        sub_key_2: float = json_field(json="subKey2")
-        sub_key_3: str = json_field(json="subKey3")
+        int_key: int = json_field(json="intKey")
+        float_key: float = json_field(json="floatKey")
+        str_key: str = json_field(json="strKey")
+        datetime_key: datetime = json_field(json="datetimeKey")
+        date_key: date = json_field(json="dateKey")
+        enum_key: Size = json_field(json="enumKey")
+
+        optional_valid_int_key: Optional[int] = json_field(json="optionalValidIntKey")
+        optional_valid_float_key: Optional[float] = json_field(json="optionalValidFloatKey")
+        optional_valid_str_key: Optional[str] = json_field(json="optionalValidStrKey")
+        optional_valid_datetime_key: Optional[datetime] = json_field(json="optionalValidDatetimeKey")
+        optional_valid_date_key: Optional[date] = json_field(json="optionalValidDateKey")
+        optional_valid_enum_key: Optional[Size] = json_field(json="optionalValidEnumKey")
+
+        optional_null_int_key: Optional[int] = json_field(json="optionalNullIntKey")
+        optional_null_float_key: Optional[float] = json_field(json="optionalNullFloatKey")
+        optional_null_str_key: Optional[str] = json_field(json="optionalNullStrKey")
+        optional_null_datetime_key: Optional[datetime] = json_field(json="optionalNullDatetimeKey")
+        optional_null_date_key: Optional[date] = json_field(json="optionalNullDateKey")
+        optional_null_enum_key: Optional[Size] = json_field(json="optionalNullEnumKey")
 
     @dataclass
-    class Obj:
-        obj_key_1: str = json_field(json="objKey1")
-        obj_key_2: int = json_field(json="objKey2")
+    class Response(Item):
+        important_item: Item = json_field(json="importantItem")
 
-    # Define the container as a dataclass
-    @dataclass
-    class Container:
-        key: str
-        meta_key: str = json_field(json="metaKey")
-        array_key: List[str] = json_field(json="arrayKey")
-        array_of_items: List[Item] = json_field(json="arrayOfItems")
-        sub_object: Obj = json_field(json="subObject")
+        items_list: List[Item] = json_field(json="itemsList")
 
+        int_list: List[int] = json_field(json="intList")
+        float_list: List[float] = json_field(json="floatList")
+        str_list: List[str] = json_field(json="strList")
+        datetime_list: List[datetime] = json_field(json="datetimeList")
+        date_list: List[date] = json_field(json="dateList")
+        enum_list: List[Size] = json_field(json="enumList")
+
+        # Include the complete item here too
+        int_key: int = json_field(json="intKey")
+        float_key: float = json_field(json="floatKey")
+        str_key: str = json_field(json="strKey")
+        datetime_key: datetime = json_field(json="datetimeKey")
+        date_key: date = json_field(json="dateKey")
+        enum_key: Size = json_field(json="enumKey")
+
+        optional_valid_int_key: Optional[int] = json_field(json="optionalValidIntKey")
+        optional_valid_float_key: Optional[float] = json_field(json="optionalValidFloatKey")
+        optional_valid_str_key: Optional[str] = json_field(json="optionalValidStrKey")
+        optional_valid_datetime_key: Optional[datetime] = json_field(json="optionalValidDatetimeKey")
+        optional_valid_date_key: Optional[date] = json_field(json="optionalValidDateKey")
+        optional_valid_enum_key: Optional[Size] = json_field(json="optionalValidEnumKey")
+
+        optional_null_int_key: Optional[int] = json_field(json="optionalNullIntKey")
+        optional_null_float_key: Optional[float] = json_field(json="optionalNullFloatKey")
+        optional_null_str_key: Optional[str] = json_field(json="optionalNullStrKey")
+        optional_null_datetime_key: Optional[datetime] = json_field(json="optionalNullDatetimeKey")
+        optional_null_date_key: Optional[date] = json_field(json="optionalNullDateKey")
+        optional_null_enum_key: Optional[Size] = json_field(json="optionalNullEnumKey")
+
+    item = {
+        "intKey": 100,
+        "floatKey": 100.99,
+        "strKey": "string-key-value",
+        "datetimeKey": "2020-06-22T10:07:30+00:00",
+        "dateKey": "2020-06-22",
+        "enumKey": "MEDIUM",
+        "optionalValidIntKey": 100,
+        "optionalValidFloatKey": 100.99,
+        "optionalValidStrKey": "string-key-value",
+        "optionalValidDatetimeKey": "2020-06-22T10:07:30+00:00",
+        "optionalValidDateKey": "2020-06-22",
+        "optionalValidEnumKey": "MEDIUM",
+        "optionalNullIntKey": None,
+        "optionalNullFloatKey": None,
+        "optionalNullStrKey": None,
+        "optionalNullDatetimeKey": None,
+        "optionalNullDateKey": None,
+        "optionalNullEnumKey": None,
+    }
     json = {
-        "key": "key-output",
-        "metaKey": "meta-key-output",
-        "arrayKey": ["elem1", "elem2", "elem3"],
-        "arrayOfItems": [
-            {"subKey1": 123, "subKey2": 123.99, "subKey3": "sub-key-3-output"},
-            {"subKey1": 456, "subKey2": 456.99, "subKey3": "second-sub-key-3-output"},
+        "importantItem": {**item},
+        "itemsList": [{**item}, {**item}, {**item}],
+        "intList": [1, 2, 3],
+        "floatList": [1.99, 2.99, 3.99],
+        "strList": ["val1", "val2", "val3"],
+        "datetimeList": [
+            "2020-06-22T10:07:30+00:00",
+            "2020-06-23T10:07:30+00:00",
+            "2020-06-24T10:07:30+00:00",
         ],
-        "subObject": {"objKey1": "obj-key-1-value", "objKey2": 951},
+        "dateList": ["2020-06-22", "2020-06-23", "2020-06-24"],
+        "enumList": ["SMALL", "MEDIUM", "LARGE"],
+        **item,
     }
 
-    want = Container(
-        key="key-output",
-        meta_key="meta-key-output",
-        array_key=["elem1", "elem2", "elem3"],
-        array_of_items=[
-            Item(sub_key_1=123, sub_key_2=123.99, sub_key_3="sub-key-3-output"),
-            Item(sub_key_1=456, sub_key_2=456.99, sub_key_3="second-sub-key-3-output"),
-        ],
-        sub_object=Obj(obj_key_1="obj-key-1-value", obj_key_2=951),
+    want_item = Item(
+        int_key=100,
+        float_key=100.99,
+        str_key="string-key-value",
+        datetime_key=datetime(2020, 6, 22, 10, 7, 30, tzinfo=pytz.UTC),
+        date_key=date(2020, 6, 22),
+        enum_key=Size.MEDIUM,
+        optional_valid_int_key=100,
+        optional_valid_float_key=100.99,
+        optional_valid_str_key="string-key-value",
+        optional_valid_datetime_key=datetime(2020, 6, 22, 10, 7, 30, tzinfo=pytz.UTC),
+        optional_valid_date_key=date(2020, 6, 22),
+        optional_valid_enum_key=Size.MEDIUM,
+        optional_null_int_key=None,
+        optional_null_float_key=None,
+        optional_null_str_key=None,
+        optional_null_datetime_key=None,
+        optional_null_date_key=None,
+        optional_null_enum_key=None,
     )
-    got = unmarshal(json, Container)
-
+    want = Response(
+        important_item=want_item,
+        items_list=[want_item, want_item, want_item],
+        int_list=[1, 2, 3],
+        float_list=[1.99, 2.99, 3.99],
+        str_list=["val1", "val2", "val3"],
+        datetime_list=[
+            datetime(2020, 6, 22, 10, 7, 30, tzinfo=pytz.UTC),
+            datetime(2020, 6, 23, 10, 7, 30, tzinfo=pytz.UTC),
+            datetime(2020, 6, 24, 10, 7, 30, tzinfo=pytz.UTC),
+        ],
+        date_list=[date(2020, 6, 22), date(2020, 6, 23), date(2020, 6, 24)],
+        enum_list=[Size.SMALL, Size.MEDIUM, Size.LARGE],
+        int_key=100,
+        float_key=100.99,
+        str_key="string-key-value",
+        datetime_key=datetime(2020, 6, 22, 10, 7, 30, tzinfo=pytz.UTC),
+        date_key=date(2020, 6, 22),
+        enum_key=Size.MEDIUM,
+        optional_valid_int_key=100,
+        optional_valid_float_key=100.99,
+        optional_valid_str_key="string-key-value",
+        optional_valid_datetime_key=datetime(2020, 6, 22, 10, 7, 30, tzinfo=pytz.UTC),
+        optional_valid_date_key=date(2020, 6, 22),
+        optional_valid_enum_key=Size.MEDIUM,
+        optional_null_int_key=None,
+        optional_null_float_key=None,
+        optional_null_str_key=None,
+        optional_null_datetime_key=None,
+        optional_null_date_key=None,
+        optional_null_enum_key=None,
+    )
+    got = unmarshal(json, Response)
     assert got == want
 
 
@@ -145,6 +260,40 @@ def test_simple_array_with_simple_object():
 
     want = [Item(first_val="hello")]
     got = unmarshal(json, List[Item])
+    assert got == want
+
+
+def test_simple_array_with_simple_object_in_dataclass():
+    @dataclass
+    class Item:
+        first_val: str = json_field(json="firstVal")
+        datetime_key: datetime = json_field(json="datetimeKey")
+        date_key: date = json_field(json="dateKey")
+
+    @dataclass
+    class Response:
+        item_key: Item = json_field(json="itemKey")
+        item_list: List[Item] = json_field(json="itemList")
+
+    item = {
+        "firstVal": "test",
+        "secondVal": "foo",
+        "datetimeKey": "2020-06-23T10:07:30+00:00",
+        "dateKey": "2020-06-23",
+    }
+    json = {
+        "itemKey": {**item},
+        "itemList": [{**item}, {**item}],
+    }
+
+    item = Item(
+        first_val="test",
+        datetime_key=datetime(2020, 6, 23, 10, 7, 30, tzinfo=pytz.UTC),
+        date_key=date(2020, 6, 23),
+    )
+    want = Response(item_key=item, item_list=[item, item])
+    got = unmarshal(json, Response)
+
     assert got == want
 
 
@@ -296,14 +445,325 @@ def test_simple_invalid_enum():
     assert str(exc_info.value) == "Unable to use data value 'GREEN' as Enum <enum 'Colour'>"
 
 
+def test_simple_optional_enum_is_null():
+    class Colour(enum.Enum):
+        RED = "RED"
+        BLUE = "BLUE"
+
+    @dataclass
+    class Item:
+        value: Optional[Colour]
+
+    json = {"value": None}
+
+    got = unmarshal(json, Item)
+    want = Item(value=None)
+    assert got == want
+
+
+def test_simple_optional_enum_is_valid():
+    class Colour(enum.Enum):
+        RED = "RED"
+        BLUE = "BLUE"
+
+    @dataclass
+    class Item:
+        value: Optional[Colour]
+
+    json = {"value": "RED"}
+
+    got = unmarshal(json, Item)
+    want = Item(value=Colour.RED)
+    assert got == want
+
+
+def test_simple_optional_datetime_is_null():
+    @dataclass
+    class Item:
+        value: Optional[datetime]
+
+    json = {"value": None}
+
+    got = unmarshal(json, Item)
+    want = Item(value=None)
+    assert got == want
+
+
+def test_simple_optional_datetime_is_valid():
+    @dataclass
+    class Item:
+        value: Optional[datetime]
+
+    json = {"value": "2020-06-23T07:59:30+00:00"}
+
+    got = unmarshal(json, Item)
+    want = Item(value=datetime(2020, 6, 23, 7, 59, 30, tzinfo=pytz.UTC))
+    assert got == want
+
+
+def test_simple_optional_date_is_null():
+    @dataclass
+    class Item:
+        value: Optional[date]
+
+    json = {"value": None}
+
+    got = unmarshal(json, Item)
+    want = Item(value=None)
+    assert got == want
+
+
+def test_simple_optional_date_is_valid():
+    @dataclass
+    class Item:
+        value: Optional[date]
+
+    json = {"value": "2020-06-23"}
+
+    got = unmarshal(json, Item)
+    want = Item(value=date(2020, 6, 23))
+    assert got == want
+
+
 def test_simple_union():
     @dataclass
     class Item:
-        value: Union[str, int]
+        value: Union[None, int]
 
     json = {"value": 120}
 
     want = Item(value=120)
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+@pytest.mark.parametrize(
+    "timestamp",
+    [
+        "2020-06-22T08:55:05+00:00",
+        "2020-06-22T08:55:05.000+00:00",
+        "2020-06-22T08:55:05.000000+00:00",
+        "2020-06-22T08:55:05Z",
+        "2020-06-22T08:55:05.000Z",
+        "2020-06-22T08:55:05.000000Z",
+    ],
+)
+def test_simple_datetime(timestamp):
+    @dataclass
+    class Item:
+        value: datetime
+
+    json = {"value": timestamp}
+
+    want = Item(value=datetime(2020, 6, 22, 8, 55, 5, tzinfo=pytz.UTC))
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_datetime_optional_valid():
+    @dataclass
+    class Item:
+        value: Optional[datetime]
+
+    json = {"value": "2020-06-22T08:55:05+00:00"}
+
+    want = Item(value=datetime(2020, 6, 22, 8, 55, 5, tzinfo=pytz.UTC))
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_datetime_optional_null():
+    @dataclass
+    class Item:
+        value: Optional[datetime]
+
+    json = {"value": None}
+
+    want = Item(value=None)
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_datetime_explicit_format():
+    @dataclass
+    class Item:
+        value: datetime
+
+    json = {"value": "2020/05/27 (09:34:36)"}
+
+    want = Item(value=datetime(2020, 5, 27, 9, 34, 36))
+    got = unmarshal(json, Item, datetime_fmt="%Y/%m/%d (%H:%M:%S)")
+    assert got == want
+
+
+def test_simple_date():
+    @dataclass
+    class Item:
+        value: date
+
+    json = {"value": "2020-06-22"}
+
+    want = Item(value=date(2020, 6, 22))
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_date_optional_valid():
+    @dataclass
+    class Item:
+        value: Optional[date]
+
+    json = {"value": "2020-06-22"}
+
+    want = Item(value=date(2020, 6, 22))
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_date_optional_null():
+    @dataclass
+    class Item:
+        value: Optional[date]
+
+    json = {"value": None}
+
+    want = Item(value=None)
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_date_explicit_format():
+    @dataclass
+    class Item:
+        value: date
+
+    json = {"value": "2020/11/02"}
+
+    want = Item(value=date(2020, 11, 2))
+    got = unmarshal(json, Item, date_fmt="%Y/%m/%d")
+    assert got == want
+
+
+def test_simple_uuid():
+    @dataclass
+    class Item:
+        value: UUID
+
+    json = {"value": "cb637f6a-0dc0-4c42-8764-5b98137a8ea6"}
+
+    want = Item(value=UUID("cb637f6a-0dc0-4c42-8764-5b98137a8ea6"))
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+@pytest.mark.parametrize("invalid_uuid", ["cb637f6a", 123, 42.12, None])
+def test_simple_uuid_is_invalid(invalid_uuid):
+    @dataclass
+    class Item:
+        value: UUID
+
+    json = {"value": invalid_uuid}
+    with pytest.raises(UnmarshalError) as exc_info:
+        unmarshal(json, Item)
+    assert str(exc_info.value) == f"Unable to use data value '{invalid_uuid}' as UUID <class 'uuid.UUID'>"
+
+
+def test_simple_uuid_optional_valid():
+    @dataclass
+    class Item:
+        value: Optional[UUID]
+
+    json = {"value": "cb637f6a-0dc0-4c42-8764-5b98137a8ea6"}
+
+    want = Item(value=UUID("cb637f6a-0dc0-4c42-8764-5b98137a8ea6"))
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_uuid_optional_null():
+    @dataclass
+    class Item:
+        value: Optional[UUID]
+
+    json = {"value": None}
+
+    want = Item(value=None)
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_uuid_array():
+    @dataclass
+    class Item:
+        value: List[UUID]
+
+    json = {"value": ["cb637f6a-0dc0-4c42-8764-5b98137a8ea6"]}
+
+    want = Item(value=[UUID("cb637f6a-0dc0-4c42-8764-5b98137a8ea6")])
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_bool():
+    @dataclass
+    class Item:
+        value: bool
+
+    json = {"value": False}
+
+    want = Item(value=False)
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+@pytest.mark.parametrize("invalid_bool", ["cb637f6a", 123, 42.12, None, "True", "False", 0, 1])
+def test_simple_bool_is_invalid(invalid_bool):
+    @dataclass
+    class Item:
+        value: bool
+
+    json = {"value": invalid_bool}
+    with pytest.raises(UnmarshalError) as exc_info:
+        unmarshal(json, Item)
+    want = (
+        f"Invalid schema. schema = <class 'bool'>, data = '{invalid_bool}' "
+        f"({type(invalid_bool)}) at location = value"
+    )
+    assert str(exc_info.value) == want
+
+
+def test_simple_bool_optional_valid():
+    @dataclass
+    class Item:
+        value: Optional[bool]
+
+    json = {"value": True}
+
+    want = Item(value=True)
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_bool_optional_null():
+    @dataclass
+    class Item:
+        value: Optional[bool]
+
+    json = {"value": None}
+
+    want = Item(value=None)
+    got = unmarshal(json, Item)
+    assert got == want
+
+
+def test_simple_bool_array():
+    @dataclass
+    class Item:
+        value: List[bool]
+
+    json = {"value": [True, False, True]}
+
+    want = Item(value=[True, False, True])
     got = unmarshal(json, Item)
     assert got == want
 
@@ -317,7 +777,8 @@ def test_works_with_primitives(json, container):
 
 
 def test_dataclass_invalid_for_json_types():
-    # we do not accept a union that includes a type of list or dict. json structure needs to be explicit.
+    # we do not accept a union other than optional includes a type of list or dict.
+    # json structure needs to be explicit.
     @dataclass
     class DictItem:
         val: Union[str, dict]
@@ -329,16 +790,18 @@ def test_dataclass_invalid_for_json_types():
     json = {"val": "hello"}
 
     want = (
-        "Invalid schema. schema = typing.Union[str, dict], data = <class 'str'>. "
-        "Unions cannot contain dict or list items in a schema."
+        "Schemas defined with unions containing anything other than optional "
+        "(NoneType + other) fields are not currently supported. Got "
+        "typing.Union[str, dict]  with  (<class 'str'>, <class 'dict'>)"
     )
     with pytest.raises(UnmarshalError) as exc_info:
         unmarshal(json, DictItem)
     assert str(exc_info.value) == want
 
     want = (
-        "Invalid schema. schema = typing.Union[str, list], data = <class 'str'>. "
-        "Unions cannot contain dict or list items in a schema."
+        "Schemas defined with unions containing anything other than optional "
+        "(NoneType + other) fields are not currently supported. Got "
+        "typing.Union[str, list]  with  (<class 'str'>, <class 'list'>)"
     )
     with pytest.raises(UnmarshalError) as exc_info:
         unmarshal(json, ListItem)
@@ -348,13 +811,17 @@ def test_dataclass_invalid_for_json_types():
 def test_unexpected_type_in_union():
     @dataclass
     class Item:
-        val: Union[float, int]
+        val: Union[None, int]
 
     json = {"val": "test"}
 
     with pytest.raises(UnmarshalError) as exc_info:
         unmarshal(json, Item)
-    assert str(exc_info.value) == "Invalid schema. schema = typing.Union[float, int], data = <class 'str'>"
+    want = (
+        "Invalid schema. schema = typing.Union[NoneType, int], data = "
+        "'test' (<class 'str'>) at location = val"
+    )
+    assert str(exc_info.value) == want
 
 
 def test_unexpected_type():
@@ -366,7 +833,8 @@ def test_unexpected_type():
 
     with pytest.raises(UnmarshalError) as exc_info:
         unmarshal(json, Item)
-    assert str(exc_info.value) == "Invalid schema. schema = <class 'str'>, data = <class 'float'>"
+    want = "Invalid schema. schema = <class 'str'>, data = '1.234' " "(<class 'float'>) at location = val"
+    assert str(exc_info.value) == want
 
 
 def test_item_not_present_in_json():
@@ -379,9 +847,8 @@ def test_item_not_present_in_json():
 
     with pytest.raises(UnmarshalError) as exc_info:
         unmarshal(json, Item)
-    assert (
-        str(exc_info.value) == "Expected json key is not present in object. otherVal not in {'val': 'test'}"
-    )
+    want = "Expected json key is not present in object at position ''. 'otherVal' not in ['val']"
+    assert str(exc_info.value) == want
 
 
 def test_unknown_datatype():
@@ -398,3 +865,10 @@ def test_unknown_datatype():
     with pytest.raises(UnmarshalError) as exc_info:
         unmarshal(json, Item)
     assert str(exc_info.value) == f"Schema type '{Impossible}' is not currently supported."
+
+
+def test_collected_data_integration():
+    # Test using real data (Passfort API)
+    got = unmarshal(collected_data.json, collected_data.CollectedData)
+    want = collected_data.expected
+    assert got == want

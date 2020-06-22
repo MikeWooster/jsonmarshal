@@ -1,0 +1,863 @@
+{
+  "entity_type": "COMPANY",
+  "metadata": {
+    "country_of_incorporation": "GBR",
+    "name": "Amazon Ltd",
+    "number": "10804351"
+  },
+  "officers": {
+    "directors": [
+      {
+        "entity_type": "INDIVIDUAL",
+        "linked_profile": {
+          "applications": [
+            {
+              "approval_blockers": [
+                {
+                  "blocker_type": "UNDETERMINED_OUTCOME",
+                  "blocking_element": {
+                    "child_elements": {
+                      "NO": "a8ca70d6-79c0-4875-a8ba-86cd2e12adff",
+                      "YES": "997a26ef-eff2-423f-b5b7-b7c1a191092d"
+                    },
+                    "element_type": "BRANCH",
+                    "id": "25406bd4-8206-460c-9ca8-872eefbb1f94",
+                    "matcher": {
+                      "exclude": [
+                        "IRN"
+                      ],
+                      "type": "STRING_LIST_EXCLUDES"
+                    },
+                    "name": "Has Address?",
+                    "property": {
+                      "type": "ADDRESS_COUNTRY"
+                    }
+                  }
+                }
+              ],
+              "assignments": [],
+              "associated_role": "SHAREHOLDER",
+              "flag": "REQUIRES_DATA",
+              "flag_history": [
+                {
+                  "date": "2020-05-27 09:34:36",
+                  "flag": "AUTOMATING",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:34:48",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:05",
+                  "flag": "RECALCULATING_RISK",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:14",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                }
+              ],
+              "hidden": false,
+              "history": [
+                {
+                  "date": "2020-05-27 09:34:36",
+                  "status": "APPLIED"
+                }
+              ],
+              "id": "47c9f60c-9ffd-11ea-8051-5a5397e86133",
+              "policy_result": {
+                "escalation_teams": []
+              },
+              "product": {
+                "alias": "borrowers",
+                "automatically_approve": true,
+                "id": "0565ac64-8e7d-11e8-af8d-0a580a00037e",
+                "name": "Borrowers"
+              },
+              "required_tasks": [
+                {
+                  "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                  "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                  "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+                },
+                {
+                  "alias": "individual_fraud_screeningdefault",
+                  "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                  "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+                }
+              ],
+              "risk": {
+                "breakdown": {
+                  "category_grouping": [],
+                  "components": [
+                    {
+                      "category": {
+                        "custom_field_name": "custom_risk",
+                        "override_name": "Custom Risk",
+                        "type": "CUSTOM_FIELD"
+                      },
+                      "category_id": "1d0223d2-0cbf-4c2e-bdcf-e9877de18ea5",
+                      "errors": [],
+                      "input_value": "",
+                      "name": "Custom Risk",
+                      "raw_value": "",
+                      "required": false
+                    }
+                  ],
+                  "inherited": {
+                    "top_parent_id": "3e0566ca-9ffd-11ea-b4e8-5a5397e86133",
+                    "top_parent_name": "Amazon Ltd"
+                  },
+                  "missing_required_components": []
+                },
+                "is_pending": false,
+                "overall": {
+                  "level": "LOW",
+                  "score": 0.0
+                },
+                "risk_model": {
+                  "id": "f1c41b83-dfa6-42de-a3b3-9690f40ae9db",
+                  "version": "1970-01-01 00:00:00"
+                },
+                "thresholds": {
+                  "low_medium": 50.0,
+                  "medium_high": 100.0
+                }
+              },
+              "status": "APPLIED",
+              "will_expire_at": "2020-07-26 09:34:40"
+            },
+            {
+              "approval_blockers": [
+                {
+                  "blocker_type": "UNDETERMINED_OUTCOME",
+                  "blocking_element": {
+                    "child_elements": {
+                      "NO": "a8ca70d6-79c0-4875-a8ba-86cd2e12adff",
+                      "YES": "997a26ef-eff2-423f-b5b7-b7c1a191092d"
+                    },
+                    "element_type": "BRANCH",
+                    "id": "25406bd4-8206-460c-9ca8-872eefbb1f94",
+                    "matcher": {
+                      "exclude": [
+                        "IRN"
+                      ],
+                      "type": "STRING_LIST_EXCLUDES"
+                    },
+                    "name": "Has Address?",
+                    "property": {
+                      "type": "ADDRESS_COUNTRY"
+                    }
+                  }
+                }
+              ],
+              "assignments": [],
+              "associated_role": "BENEFICIAL_OWNER",
+              "flag": "REQUIRES_DATA",
+              "flag_history": [
+                {
+                  "date": "2020-05-27 09:34:40",
+                  "flag": "RECALCULATING_RISK",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:34:48",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:05",
+                  "flag": "RECALCULATING_RISK",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:14",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                }
+              ],
+              "hidden": false,
+              "history": [
+                {
+                  "date": "2020-05-27 09:34:40",
+                  "status": "APPLIED"
+                }
+              ],
+              "id": "4a3c32c8-9ffd-11ea-afe7-bae2e8c6c169",
+              "policy_result": {
+                "escalation_teams": []
+              },
+              "product": {
+                "alias": "borrowers",
+                "automatically_approve": true,
+                "id": "0565ac64-8e7d-11e8-af8d-0a580a00037e",
+                "name": "Borrowers"
+              },
+              "required_tasks": [
+                {
+                  "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                  "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                  "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+                },
+                {
+                  "alias": "individual_fraud_screeningdefault",
+                  "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                  "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+                }
+              ],
+              "risk": {
+                "breakdown": {
+                  "category_grouping": [],
+                  "components": [
+                    {
+                      "category": {
+                        "custom_field_name": "custom_risk",
+                        "override_name": "Custom Risk",
+                        "type": "CUSTOM_FIELD"
+                      },
+                      "category_id": "1d0223d2-0cbf-4c2e-bdcf-e9877de18ea5",
+                      "errors": [],
+                      "input_value": "",
+                      "name": "Custom Risk",
+                      "raw_value": "",
+                      "required": false
+                    }
+                  ],
+                  "inherited": {
+                    "top_parent_id": "3e0566ca-9ffd-11ea-b4e8-5a5397e86133",
+                    "top_parent_name": "Amazon Ltd"
+                  },
+                  "missing_required_components": []
+                },
+                "is_pending": false,
+                "overall": {
+                  "level": "LOW",
+                  "score": 0.0
+                },
+                "risk_model": {
+                  "id": "f1c41b83-dfa6-42de-a3b3-9690f40ae9db",
+                  "version": "1970-01-01 00:00:00"
+                },
+                "thresholds": {
+                  "low_medium": 50.0,
+                  "medium_high": 100.0
+                }
+              },
+              "status": "APPLIED",
+              "will_expire_at": "2020-07-26 09:34:40"
+            },
+            {
+              "approval_blockers": [
+                {
+                  "blocker_type": "UNDETERMINED_OUTCOME",
+                  "blocking_element": {
+                    "child_elements": {
+                      "NO": "a8ca70d6-79c0-4875-a8ba-86cd2e12adff",
+                      "YES": "997a26ef-eff2-423f-b5b7-b7c1a191092d"
+                    },
+                    "element_type": "BRANCH",
+                    "id": "25406bd4-8206-460c-9ca8-872eefbb1f94",
+                    "matcher": {
+                      "exclude": [
+                        "IRN"
+                      ],
+                      "type": "STRING_LIST_EXCLUDES"
+                    },
+                    "name": "Has Address?",
+                    "property": {
+                      "type": "ADDRESS_COUNTRY"
+                    }
+                  }
+                }
+              ],
+              "assignments": [],
+              "associated_role": "DIRECTOR",
+              "flag": "REQUIRES_DATA",
+              "flag_history": [
+                {
+                  "date": "2020-05-27 09:35:05",
+                  "flag": "RECALCULATING_RISK",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:14",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                }
+              ],
+              "hidden": false,
+              "history": [
+                {
+                  "date": "2020-05-27 09:35:05",
+                  "status": "APPLIED"
+                }
+              ],
+              "id": "58de1ef6-9ffd-11ea-80ec-969a8982f1d5",
+              "policy_result": {
+                "escalation_teams": []
+              },
+              "product": {
+                "alias": "borrowers",
+                "automatically_approve": true,
+                "id": "0565ac64-8e7d-11e8-af8d-0a580a00037e",
+                "name": "Borrowers"
+              },
+              "required_tasks": [
+                {
+                  "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                  "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                  "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+                },
+                {
+                  "alias": "individual_fraud_screeningdefault",
+                  "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                  "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+                }
+              ],
+              "risk": {
+                "breakdown": {
+                  "category_grouping": [],
+                  "components": [
+                    {
+                      "category": {
+                        "custom_field_name": "custom_risk",
+                        "override_name": "Custom Risk",
+                        "type": "CUSTOM_FIELD"
+                      },
+                      "category_id": "1d0223d2-0cbf-4c2e-bdcf-e9877de18ea5",
+                      "errors": [],
+                      "input_value": "",
+                      "name": "Custom Risk",
+                      "raw_value": "",
+                      "required": false
+                    }
+                  ],
+                  "inherited": {
+                    "top_parent_id": "3e0566ca-9ffd-11ea-b4e8-5a5397e86133",
+                    "top_parent_name": "Amazon Ltd"
+                  },
+                  "missing_required_components": []
+                },
+                "is_pending": false,
+                "overall": {
+                  "level": "LOW",
+                  "score": 0.0
+                },
+                "risk_model": {
+                  "id": "f1c41b83-dfa6-42de-a3b3-9690f40ae9db",
+                  "version": "1970-01-01 00:00:00"
+                },
+                "thresholds": {
+                  "low_medium": 50.0,
+                  "medium_high": 100.0
+                }
+              },
+              "status": "APPLIED",
+              "will_expire_at": "2020-07-26 09:34:40"
+            }
+          ],
+          "category": "APPLICANT",
+          "collected_data": {
+            "entity_type": "INDIVIDUAL",
+            "personal_details": {
+              "name": {
+                "family_name": "Haigh",
+                "given_names": [
+                  "Sebastian",
+                  "Thomas"
+                ]
+              }
+            }
+          },
+          "creation_date": "2020-05-27 09:34:36",
+          "display_name": "Sebastian Thomas Haigh",
+          "has_associates": false,
+          "has_collection_steps": false,
+          "id": "47c11334-9ffd-11ea-ac63-5a5397e86133",
+          "role": "INDIVIDUAL_ASSOCIATED",
+          "status": "NORMAL",
+          "tags": [
+            {
+              "id": "68ebdf5c-0bbd-11ea-b44e-563aaa5778a5",
+              "is_automatic": false,
+              "name": "PSC"
+            }
+          ],
+          "task_progress": {
+            "completed_count": 2,
+            "total_count": 2
+          },
+          "tasks": [
+            {
+              "creation_date": "2020-05-27 09:34:36",
+              "id": "47e42692-9ffd-11ea-8f2a-5a5397e86133",
+              "is_complete": true,
+              "is_expired": false,
+              "is_skipped": false,
+              "state": "COMPLETED_PASS",
+              "type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE",
+              "variant": {
+                "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+              }
+            },
+            {
+              "creation_date": "2020-05-27 09:34:37",
+              "id": "47eba42e-9ffd-11ea-a080-5a5397e86133",
+              "is_complete": true,
+              "is_expired": false,
+              "is_skipped": false,
+              "state": "COMPLETED_PASS",
+              "type": "INDIVIDUAL_FRAUD_SCREENING",
+              "variant": {
+                "alias": "individual_fraud_screeningdefault",
+                "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+              }
+            }
+          ],
+          "unresolved_event_types": []
+        },
+        "merged_resolver_ids": [],
+        "resolver_id": "59a7749e-9ffd-11ea-8c58-56fdcde0987e",
+        "task_variant_ids": [
+          "fda0a2b6-d7aa-11e8-8298-0a580a00031c"
+        ],
+        "unverified_task_variant_ids": []
+      }
+    ]
+  },
+  "ownership_structure": {
+    "beneficial_owners": [
+      {
+        "entity_type": "INDIVIDUAL",
+        "linked_profile": {
+          "applications": [
+            {
+              "approval_blockers": [
+                {
+                  "blocker_type": "UNDETERMINED_OUTCOME",
+                  "blocking_element": {
+                    "child_elements": {
+                      "NO": "a8ca70d6-79c0-4875-a8ba-86cd2e12adff",
+                      "YES": "997a26ef-eff2-423f-b5b7-b7c1a191092d"
+                    },
+                    "element_type": "BRANCH",
+                    "id": "25406bd4-8206-460c-9ca8-872eefbb1f94",
+                    "matcher": {
+                      "exclude": [
+                        "IRN"
+                      ],
+                      "type": "STRING_LIST_EXCLUDES"
+                    },
+                    "name": "Has Address?",
+                    "property": {
+                      "type": "ADDRESS_COUNTRY"
+                    }
+                  }
+                }
+              ],
+              "assignments": [],
+              "associated_role": "SHAREHOLDER",
+              "flag": "REQUIRES_DATA",
+              "flag_history": [
+                {
+                  "date": "2020-05-27 09:34:36",
+                  "flag": "AUTOMATING",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:34:48",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:05",
+                  "flag": "RECALCULATING_RISK",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:14",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                }
+              ],
+              "hidden": false,
+              "history": [
+                {
+                  "date": "2020-05-27 09:34:36",
+                  "status": "APPLIED"
+                }
+              ],
+              "id": "47c9f60c-9ffd-11ea-8051-5a5397e86133",
+              "policy_result": {
+                "escalation_teams": []
+              },
+              "product": {
+                "alias": "borrowers",
+                "automatically_approve": true,
+                "id": "0565ac64-8e7d-11e8-af8d-0a580a00037e",
+                "name": "Borrowers"
+              },
+              "required_tasks": [
+                {
+                  "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                  "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                  "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+                },
+                {
+                  "alias": "individual_fraud_screeningdefault",
+                  "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                  "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+                }
+              ],
+              "risk": {
+                "breakdown": {
+                  "category_grouping": [],
+                  "components": [
+                    {
+                      "category": {
+                        "custom_field_name": "custom_risk",
+                        "override_name": "Custom Risk",
+                        "type": "CUSTOM_FIELD"
+                      },
+                      "category_id": "1d0223d2-0cbf-4c2e-bdcf-e9877de18ea5",
+                      "errors": [],
+                      "input_value": "",
+                      "name": "Custom Risk",
+                      "raw_value": "",
+                      "required": false
+                    }
+                  ],
+                  "inherited": {
+                    "top_parent_id": "3e0566ca-9ffd-11ea-b4e8-5a5397e86133",
+                    "top_parent_name": "Amazon Ltd"
+                  },
+                  "missing_required_components": []
+                },
+                "is_pending": false,
+                "overall": {
+                  "level": "LOW",
+                  "score": 0.0
+                },
+                "risk_model": {
+                  "id": "f1c41b83-dfa6-42de-a3b3-9690f40ae9db",
+                  "version": "1970-01-01 00:00:00"
+                },
+                "thresholds": {
+                  "low_medium": 50.0,
+                  "medium_high": 100.0
+                }
+              },
+              "status": "APPLIED",
+              "will_expire_at": "2020-07-26 09:34:40"
+            },
+            {
+              "approval_blockers": [
+                {
+                  "blocker_type": "UNDETERMINED_OUTCOME",
+                  "blocking_element": {
+                    "child_elements": {
+                      "NO": "a8ca70d6-79c0-4875-a8ba-86cd2e12adff",
+                      "YES": "997a26ef-eff2-423f-b5b7-b7c1a191092d"
+                    },
+                    "element_type": "BRANCH",
+                    "id": "25406bd4-8206-460c-9ca8-872eefbb1f94",
+                    "matcher": {
+                      "exclude": [
+                        "IRN"
+                      ],
+                      "type": "STRING_LIST_EXCLUDES"
+                    },
+                    "name": "Has Address?",
+                    "property": {
+                      "type": "ADDRESS_COUNTRY"
+                    }
+                  }
+                }
+              ],
+              "assignments": [],
+              "associated_role": "BENEFICIAL_OWNER",
+              "flag": "REQUIRES_DATA",
+              "flag_history": [
+                {
+                  "date": "2020-05-27 09:34:40",
+                  "flag": "RECALCULATING_RISK",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:34:48",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:05",
+                  "flag": "RECALCULATING_RISK",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:14",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                }
+              ],
+              "hidden": false,
+              "history": [
+                {
+                  "date": "2020-05-27 09:34:40",
+                  "status": "APPLIED"
+                }
+              ],
+              "id": "4a3c32c8-9ffd-11ea-afe7-bae2e8c6c169",
+              "policy_result": {
+                "escalation_teams": []
+              },
+              "product": {
+                "alias": "borrowers",
+                "automatically_approve": true,
+                "id": "0565ac64-8e7d-11e8-af8d-0a580a00037e",
+                "name": "Borrowers"
+              },
+              "required_tasks": [
+                {
+                  "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                  "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                  "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+                },
+                {
+                  "alias": "individual_fraud_screeningdefault",
+                  "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                  "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+                }
+              ],
+              "risk": {
+                "breakdown": {
+                  "category_grouping": [],
+                  "components": [
+                    {
+                      "category": {
+                        "custom_field_name": "custom_risk",
+                        "override_name": "Custom Risk",
+                        "type": "CUSTOM_FIELD"
+                      },
+                      "category_id": "1d0223d2-0cbf-4c2e-bdcf-e9877de18ea5",
+                      "errors": [],
+                      "input_value": "",
+                      "name": "Custom Risk",
+                      "raw_value": "",
+                      "required": false
+                    }
+                  ],
+                  "inherited": {
+                    "top_parent_id": "3e0566ca-9ffd-11ea-b4e8-5a5397e86133",
+                    "top_parent_name": "Amazon Ltd"
+                  },
+                  "missing_required_components": []
+                },
+                "is_pending": false,
+                "overall": {
+                  "level": "LOW",
+                  "score": 0.0
+                },
+                "risk_model": {
+                  "id": "f1c41b83-dfa6-42de-a3b3-9690f40ae9db",
+                  "version": "1970-01-01 00:00:00"
+                },
+                "thresholds": {
+                  "low_medium": 50.0,
+                  "medium_high": 100.0
+                }
+              },
+              "status": "APPLIED",
+              "will_expire_at": "2020-07-26 09:34:40"
+            },
+            {
+              "approval_blockers": [
+                {
+                  "blocker_type": "UNDETERMINED_OUTCOME",
+                  "blocking_element": {
+                    "child_elements": {
+                      "NO": "a8ca70d6-79c0-4875-a8ba-86cd2e12adff",
+                      "YES": "997a26ef-eff2-423f-b5b7-b7c1a191092d"
+                    },
+                    "element_type": "BRANCH",
+                    "id": "25406bd4-8206-460c-9ca8-872eefbb1f94",
+                    "matcher": {
+                      "exclude": [
+                        "IRN"
+                      ],
+                      "type": "STRING_LIST_EXCLUDES"
+                    },
+                    "name": "Has Address?",
+                    "property": {
+                      "type": "ADDRESS_COUNTRY"
+                    }
+                  }
+                }
+              ],
+              "assignments": [],
+              "associated_role": "DIRECTOR",
+              "flag": "REQUIRES_DATA",
+              "flag_history": [
+                {
+                  "date": "2020-05-27 09:35:05",
+                  "flag": "RECALCULATING_RISK",
+                  "status": "APPLIED"
+                },
+                {
+                  "date": "2020-05-27 09:35:14",
+                  "flag": "REQUIRES_DATA",
+                  "status": "APPLIED"
+                }
+              ],
+              "hidden": false,
+              "history": [
+                {
+                  "date": "2020-05-27 09:35:05",
+                  "status": "APPLIED"
+                }
+              ],
+              "id": "58de1ef6-9ffd-11ea-80ec-969a8982f1d5",
+              "policy_result": {
+                "escalation_teams": []
+              },
+              "product": {
+                "alias": "borrowers",
+                "automatically_approve": true,
+                "id": "0565ac64-8e7d-11e8-af8d-0a580a00037e",
+                "name": "Borrowers"
+              },
+              "required_tasks": [
+                {
+                  "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                  "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                  "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+                },
+                {
+                  "alias": "individual_fraud_screeningdefault",
+                  "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                  "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+                }
+              ],
+              "risk": {
+                "breakdown": {
+                  "category_grouping": [],
+                  "components": [
+                    {
+                      "category": {
+                        "custom_field_name": "custom_risk",
+                        "override_name": "Custom Risk",
+                        "type": "CUSTOM_FIELD"
+                      },
+                      "category_id": "1d0223d2-0cbf-4c2e-bdcf-e9877de18ea5",
+                      "errors": [],
+                      "input_value": "",
+                      "name": "Custom Risk",
+                      "raw_value": "",
+                      "required": false
+                    }
+                  ],
+                  "inherited": {
+                    "top_parent_id": "3e0566ca-9ffd-11ea-b4e8-5a5397e86133",
+                    "top_parent_name": "Amazon Ltd"
+                  },
+                  "missing_required_components": []
+                },
+                "is_pending": false,
+                "overall": {
+                  "level": "LOW",
+                  "score": 0.0
+                },
+                "risk_model": {
+                  "id": "f1c41b83-dfa6-42de-a3b3-9690f40ae9db",
+                  "version": "1970-01-01 00:00:00"
+                },
+                "thresholds": {
+                  "low_medium": 50.0,
+                  "medium_high": 100.0
+                }
+              },
+              "status": "APPLIED",
+              "will_expire_at": "2020-07-26 09:34:40"
+            }
+          ],
+          "category": "APPLICANT",
+          "collected_data": {
+            "entity_type": "INDIVIDUAL",
+            "personal_details": {
+              "name": {
+                "family_name": "Haigh",
+                "given_names": [
+                  "Sebastian",
+                  "Thomas"
+                ]
+              }
+            }
+          },
+          "creation_date": "2020-05-27 09:34:36",
+          "display_name": "Sebastian Thomas Haigh",
+          "has_associates": false,
+          "has_collection_steps": false,
+          "id": "47c11334-9ffd-11ea-ac63-5a5397e86133",
+          "role": "INDIVIDUAL_ASSOCIATED",
+          "status": "NORMAL",
+          "tags": [
+            {
+              "id": "68ebdf5c-0bbd-11ea-b44e-563aaa5778a5",
+              "is_automatic": false,
+              "name": "PSC"
+            }
+          ],
+          "task_progress": {
+            "completed_count": 2,
+            "total_count": 2
+          },
+          "tasks": [
+            {
+              "creation_date": "2020-05-27 09:34:36",
+              "id": "47e42692-9ffd-11ea-8f2a-5a5397e86133",
+              "is_complete": true,
+              "is_expired": false,
+              "is_skipped": false,
+              "state": "COMPLETED_PASS",
+              "type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE",
+              "variant": {
+                "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+              }
+            },
+            {
+              "creation_date": "2020-05-27 09:34:37",
+              "id": "47eba42e-9ffd-11ea-a080-5a5397e86133",
+              "is_complete": true,
+              "is_expired": false,
+              "is_skipped": false,
+              "state": "COMPLETED_PASS",
+              "type": "INDIVIDUAL_FRAUD_SCREENING",
+              "variant": {
+                "alias": "individual_fraud_screeningdefault",
+                "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+              }
+            }
+          ],
+          "unresolved_event_types": []
+        },
+        "merged_resolver_ids": [],
+        "natures_of_control": [],
+        "resolver_id": "59a7c354-9ffd-11ea-be4d-56fdcde0987e",
+        "shareholdings": [],
+        "task_variant_ids": [
+          "1098df9e-d7ab-11e8-990d-0a580a000562",
+          "fda0a2b6-d7aa-11e8-8298-0a580a00031c"
+        ],
+        "unverified_task_variant_ids": []
+      }
+    ]
+  }
+}

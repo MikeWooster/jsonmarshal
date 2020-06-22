@@ -4,19 +4,52 @@ for rc/ named branches.
 """
 import subprocess
 import sys
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 VERSION_FILE = "VERSION"
 
 
-def main():
-    branch = get_current_branch()
-    if branch != "master" and not branch.startswith("rc/"):
-        print(f"not a valid branch for uploading version: '{branch}'")
-        return
+def main(github_ref: str):
+    major, minor, patch, rc = extract_version_from_ref(github_ref)
+    versions = get_all_versions()
+    if (major, minor, patch, rc) in versions:
+        raise SystemExit(
+            f"Unable to upload new version. version already exists: '{fmt_version(major, minor, patch, rc)}'"
+        )
+    cur_version = get_version()
+    if cur_version != f"{major}.{minor}.{patch}":
+        raise SystemExit(
+            "Cannot upload tag version. it does not match the current version of the project: "
+            f"current_version = {cur_version}, tag_version = {fmt_version(major, minor, patch)}"
+        )
+    if rc > 0:
+        update_rc_version(rc)
 
-    if branch.startswith("rc/"):
-        update_rc_version()
+
+def fmt_version(major: int, minor: int, patch: int, rc: int = 0):
+    if rc > 0:
+        return f"{major}.{minor}.{patch}"
+    return f"{major}.{minor}.{patch}rc{rc}"
+
+
+def extract_version_from_ref(ref: str) -> Tuple[int, int, int, int]:
+    err = (
+        f"invalid github ref, expecting in format `refs/tags/v<major>.<minor>.<patch>[rc<rc>]`, got: '{ref}'"
+    )
+    try:
+        title, subtitle, version = ref.split("/")
+    except ValueError:
+        raise SystemExit(err)
+
+    if title != "refs" or subtitle != "tags" or not version.startswith("v"):
+        raise SystemExit(err)
+
+    try:
+        major, minor, patch, rc = split_ver(version[1:])
+    except ValueError:
+        raise SystemExit(err)
+
+    return major, minor, patch, rc
 
 
 def get_current_branch() -> str:
@@ -26,20 +59,19 @@ def get_current_branch() -> str:
     return p.stdout.decode("utf-8").strip()
 
 
-def update_rc_version():
+def update_rc_version(rc_version):
     # Extract the first 8 chars of the git hash and create a new rc version
     version = get_version()
-    last_rc = get_last_rc_version(version)
-    update_version_file(version, last_rc + 1)
+    update_version_file(version, rc_version)
 
 
-def get_last_rc_version(this_version: str) -> int:
+def get_all_versions() -> List[Tuple[int, int, int, int]]:
     p = subprocess.run(["pip", "search", "jsonmarshal"], capture_output=True)
     if p.returncode != 0:
         raise SystemExit("Unable to determine current git branch name")
 
     # A list to contain the existing rc versions deployed
-    cur_rcs = []
+    versions = []
 
     resp = p.stdout.decode("utf-8").strip()
     for line in resp.split("\n"):
@@ -48,14 +80,9 @@ def get_last_rc_version(this_version: str) -> int:
             continue
         version = elems[1].strip("()")
 
-        major, minor, patch, rc = split_ver(version)
+        versions.append(split_ver(version))
 
-        if f"{major}.{minor}.{patch}" != this_version:
-            continue
-        cur_rcs.append(rc)
-    if not cur_rcs:
-        return 0
-    return max(cur_rcs)
+    return versions
 
 
 def split_ver(version: str) -> Tuple[int, int, int, int]:
@@ -85,4 +112,4 @@ def update_version_file(version: str, rc_ver: int):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(github_ref=sys.argv[1]))

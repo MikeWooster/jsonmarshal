@@ -3,7 +3,7 @@
 import setuptools
 
 application_dependencies = []
-test_dependencies = ["pytest", "pytest-env", "pytest-cov"]
+test_dependencies = ["pytest", "pytest-env", "pytest-cov", "pytz"]
 lint_dependencies = ["flake8", "flake8-docstrings", "black", "isort"]
 docs_dependencies = []
 deploy_dependencies = ["requests", "twine"]
