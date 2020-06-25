@@ -11,7 +11,9 @@ VERSION_FILE = "VERSION"
 
 def main(github_ref: str):
     major, minor, patch, rc = extract_version_from_ref(github_ref)
+    print(f"tagged version: {fmt_version(major, minor, patch, rc)}")
     versions = get_all_versions()
+
     if (major, minor, patch, rc) in versions:
         raise SystemExit(
             f"Unable to upload new version. version already exists: '{fmt_version(major, minor, patch, rc)}'"
@@ -23,7 +25,10 @@ def main(github_ref: str):
             f"current_version = {cur_version}, tag_version = {fmt_version(major, minor, patch)}"
         )
     if rc > 0:
+        print("Tagged as RC version. Updating version file.")
         update_rc_version(rc)
+
+    print(f"Version in VERSION file: {read_version()}")
 
 
 def fmt_version(major: int, minor: int, patch: int, rc: int = 0):
@@ -95,14 +100,19 @@ def split_ver(version: str) -> Tuple[int, int, int, int]:
 
 
 def get_version() -> str:
-    with open(VERSION_FILE, "r") as buf:
-        v = buf.read()
+    v = read_version()
 
     # version is symantic.  Need 3 parts and last part must be an integer
     # otherwise we cant update the version.
     parts = v.split(".")
     if len(parts) != 3 or not parts[2].isnumeric():
         raise SystemExit(f"version is invalid: '{v}'")
+    return v
+
+
+def read_version() -> str:
+    with open(VERSION_FILE, "r") as buf:
+        v = buf.read()
     return v
 
 
