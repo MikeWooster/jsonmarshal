@@ -1,0 +1,165 @@
+{
+  "entity_type": "COMPANY",
+  "metadata": {
+    "country_of_incorporation": "GBR",
+    "name": "Amazon Ltd",
+    "number": "10804351"
+  },
+  "officers": {
+    "directors": [
+      {
+        "entity_type": "INDIVIDUAL",
+        "linked_profile": {
+          "category": "APPLICANT",
+          "collected_data": {
+            "entity_type": "INDIVIDUAL",
+            "personal_details": {
+              "name": {
+                "family_name": "Haigh",
+                "given_names": [
+                  "Sebastian",
+                  "Thomas"
+                ]
+              }
+            }
+          },
+          "creation_date": "2020-05-27 09:34:36",
+          "display_name": "Sebastian Thomas Haigh",
+          "has_associates": false,
+          "has_collection_steps": false,
+          "id": "47c11334-9ffd-11ea-ac63-5a5397e86133",
+          "role": "INDIVIDUAL_ASSOCIATED",
+          "status": "NORMAL",
+          "tags": [
+            {
+              "id": "68ebdf5c-0bbd-11ea-b44e-563aaa5778a5",
+              "is_automatic": false,
+              "name": "PSC"
+            }
+          ],
+          "task_progress": {
+            "completed_count": 2,
+            "total_count": 2
+          },
+          "tasks": [
+            {
+              "creation_date": "2020-05-27 09:34:36",
+              "id": "47e42692-9ffd-11ea-8f2a-5a5397e86133",
+              "is_complete": true,
+              "is_expired": false,
+              "is_skipped": false,
+              "state": "COMPLETED_PASS",
+              "type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE",
+              "variant": {
+                "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+              }
+            },
+            {
+              "creation_date": "2020-05-27 09:34:37",
+              "id": "47eba42e-9ffd-11ea-a080-5a5397e86133",
+              "is_complete": true,
+              "is_expired": false,
+              "is_skipped": false,
+              "state": "COMPLETED_PASS",
+              "type": "INDIVIDUAL_FRAUD_SCREENING",
+              "variant": {
+                "alias": "individual_fraud_screeningdefault",
+                "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+              }
+            }
+          ],
+          "unresolved_event_types": []
+        },
+        "merged_resolver_ids": [],
+        "resolver_id": "59a7749e-9ffd-11ea-8c58-56fdcde0987e",
+        "task_variant_ids": [
+          "fda0a2b6-d7aa-11e8-8298-0a580a00031c"
+        ],
+        "unverified_task_variant_ids": []
+      }
+    ]
+  },
+  "ownership_structure": {
+    "beneficial_owners": [
+      {
+        "entity_type": "INDIVIDUAL",
+        "linked_profile": {
+          "category": "APPLICANT",
+          "collected_data": {
+            "entity_type": "INDIVIDUAL",
+            "personal_details": {
+              "name": {
+                "family_name": "Haigh",
+                "given_names": [
+                  "Sebastian",
+                  "Thomas"
+                ]
+              }
+            }
+          },
+          "creation_date": "2020-05-27 09:34:36",
+          "display_name": "Sebastian Thomas Haigh",
+          "has_associates": false,
+          "has_collection_steps": false,
+          "id": "47c11334-9ffd-11ea-ac63-5a5397e86133",
+          "role": "INDIVIDUAL_ASSOCIATED",
+          "status": "NORMAL",
+          "tags": [
+            {
+              "id": "68ebdf5c-0bbd-11ea-b44e-563aaa5778a5",
+              "is_automatic": false,
+              "name": "PSC"
+            }
+          ],
+          "task_progress": {
+            "completed_count": 2,
+            "total_count": 2
+          },
+          "tasks": [
+            {
+              "creation_date": "2020-05-27 09:34:36",
+              "id": "47e42692-9ffd-11ea-8f2a-5a5397e86133",
+              "is_complete": true,
+              "is_expired": false,
+              "is_skipped": false,
+              "state": "COMPLETED_PASS",
+              "type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE",
+              "variant": {
+                "alias": "individual_assess_political_and_sanctions_exposuredefault",
+                "id": "990b6728-8e7e-11e8-baed-0a580a000380",
+                "task_type": "INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE"
+              }
+            },
+            {
+              "creation_date": "2020-05-27 09:34:37",
+              "id": "47eba42e-9ffd-11ea-a080-5a5397e86133",
+              "is_complete": true,
+              "is_expired": false,
+              "is_skipped": false,
+              "state": "COMPLETED_PASS",
+              "type": "INDIVIDUAL_FRAUD_SCREENING",
+              "variant": {
+                "alias": "individual_fraud_screeningdefault",
+                "id": "ca3680a4-5713-11ea-894c-22bc58dfbf7d",
+                "task_type": "INDIVIDUAL_FRAUD_SCREENING"
+              }
+            }
+          ],
+          "unresolved_event_types": []
+        },
+        "merged_resolver_ids": [],
+        "natures_of_control": [],
+        "resolver_id": "59a7c354-9ffd-11ea-be4d-56fdcde0987e",
+        "shareholdings": [],
+        "task_variant_ids": [
+          "1098df9e-d7ab-11e8-990d-0a580a000562",
+          "fda0a2b6-d7aa-11e8-8298-0a580a00031c"
+        ],
+        "unverified_task_variant_ids": []
+      }
+    ]
+  }
+}

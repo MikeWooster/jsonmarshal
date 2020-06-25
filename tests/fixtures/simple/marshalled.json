@@ -1,0 +1,132 @@
+{
+  "importantItem": {
+    "intKey": 100,
+    "floatKey": 100.99,
+    "strKey": "string-key-value",
+    "datetimeKey": "2020-06-22T10:07:30+00:00",
+    "dateKey": "2020-06-22",
+    "enumKey": "MEDIUM",
+    "optionalValidIntKey": 100,
+    "optionalValidFloatKey": 100.99,
+    "optionalValidStrKey": "string-key-value",
+    "optionalValidDatetimeKey": "2020-06-22T10:07:30+00:00",
+    "optionalValidDateKey": "2020-06-22",
+    "optionalValidEnumKey": "MEDIUM",
+    "optionalNullIntKey": null,
+    "optionalNullFloatKey": null,
+    "optionalNullStrKey": null,
+    "optionalNullDatetimeKey": null,
+    "optionalNullDateKey": null,
+    "optionalNullEnumKey": null
+  },
+  "itemsList": [
+    {
+      "intKey": 100,
+      "floatKey": 100.99,
+      "strKey": "string-key-value",
+      "datetimeKey": "2020-06-22T10:07:30+00:00",
+      "dateKey": "2020-06-22",
+      "enumKey": "MEDIUM",
+      "optionalValidIntKey": 100,
+      "optionalValidFloatKey": 100.99,
+      "optionalValidStrKey": "string-key-value",
+      "optionalValidDatetimeKey": "2020-06-22T10:07:30+00:00",
+      "optionalValidDateKey": "2020-06-22",
+      "optionalValidEnumKey": "MEDIUM",
+      "optionalNullIntKey": null,
+      "optionalNullFloatKey": null,
+      "optionalNullStrKey": null,
+      "optionalNullDatetimeKey": null,
+      "optionalNullDateKey": null,
+      "optionalNullEnumKey": null
+    },
+    {
+      "intKey": 100,
+      "floatKey": 100.99,
+      "strKey": "string-key-value",
+      "datetimeKey": "2020-06-22T10:07:30+00:00",
+      "dateKey": "2020-06-22",
+      "enumKey": "MEDIUM",
+      "optionalValidIntKey": 100,
+      "optionalValidFloatKey": 100.99,
+      "optionalValidStrKey": "string-key-value",
+      "optionalValidDatetimeKey": "2020-06-22T10:07:30+00:00",
+      "optionalValidDateKey": "2020-06-22",
+      "optionalValidEnumKey": "MEDIUM",
+      "optionalNullIntKey": null,
+      "optionalNullFloatKey": null,
+      "optionalNullStrKey": null,
+      "optionalNullDatetimeKey": null,
+      "optionalNullDateKey": null,
+      "optionalNullEnumKey": null
+    },
+    {
+      "intKey": 100,
+      "floatKey": 100.99,
+      "strKey": "string-key-value",
+      "datetimeKey": "2020-06-22T10:07:30+00:00",
+      "dateKey": "2020-06-22",
+      "enumKey": "MEDIUM",
+      "optionalValidIntKey": 100,
+      "optionalValidFloatKey": 100.99,
+      "optionalValidStrKey": "string-key-value",
+      "optionalValidDatetimeKey": "2020-06-22T10:07:30+00:00",
+      "optionalValidDateKey": "2020-06-22",
+      "optionalValidEnumKey": "MEDIUM",
+      "optionalNullIntKey": null,
+      "optionalNullFloatKey": null,
+      "optionalNullStrKey": null,
+      "optionalNullDatetimeKey": null,
+      "optionalNullDateKey": null,
+      "optionalNullEnumKey": null
+    }
+  ],
+  "intList": [
+    1,
+    2,
+    3
+  ],
+  "floatList": [
+    1.99,
+    2.99,
+    3.99
+  ],
+  "strList": [
+    "val1",
+    "val2",
+    "val3"
+  ],
+  "datetimeList": [
+    "2020-06-22T10:07:30+00:00",
+    "2020-06-23T10:07:30+00:00",
+    "2020-06-24T10:07:30+00:00"
+  ],
+  "dateList": [
+    "2020-06-22",
+    "2020-06-23",
+    "2020-06-24"
+  ],
+  "enumList": [
+    "SMALL",
+    "MEDIUM",
+    "LARGE"
+  ],
+  "intKey": 100,
+  "floatKey": 100.99,
+  "strKey": "string-key-value",
+  "datetimeKey": "2020-06-22T10:07:30+00:00",
+  "dateKey": "2020-06-22",
+  "enumKey": "MEDIUM",
+  "optionalValidIntKey": 100,
+  "optionalValidFloatKey": 100.99,
+  "optionalValidStrKey": "string-key-value",
+  "optionalValidDatetimeKey": "2020-06-22T10:07:30+00:00",
+  "optionalValidDateKey": "2020-06-22",
+  "optionalValidEnumKey": "MEDIUM",
+  "optionalNullIntKey": null,
+  "optionalNullFloatKey": null,
+  "optionalNullStrKey": null,
+  "optionalNullDatetimeKey": null,
+  "optionalNullDateKey": null,
+  "optionalNullEnumKey": null
+}

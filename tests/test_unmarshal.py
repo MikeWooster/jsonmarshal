@@ -10,7 +10,15 @@ import pytz
 from jsonmarshal.exceptions import UnmarshalError
 from jsonmarshal.fields import json_field
 from jsonmarshal.unmarshal import unmarshal
-from tests.fixtures import collected_data
+from tests.fixtures import load_fixtures
+
+
+@pytest.mark.parametrize(
+    "fixture_name,marshalled,schema,unmarshalled,date_fmt,datetime_fmt", load_fixtures()
+)
+def test_unmarshal_integration(fixture_name, marshalled, schema, unmarshalled, date_fmt, datetime_fmt):
+    got = unmarshal(marshalled, schema, date_fmt=date_fmt, datetime_fmt=datetime_fmt)
+    assert got == unmarshalled
 
 
 def test_unmarshal_complex():
@@ -865,10 +873,3 @@ def test_unknown_datatype():
     with pytest.raises(UnmarshalError) as exc_info:
         unmarshal(json, Item)
     assert str(exc_info.value) == f"Schema type '{Impossible}' is not currently supported."
-
-
-def test_collected_data_integration():
-    # Test using real data (Passfort API)
-    got = unmarshal(collected_data.json, collected_data.CollectedData)
-    want = collected_data.expected
-    assert got == want

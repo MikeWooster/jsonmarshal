@@ -2,4 +2,8 @@
 
 
 class UnmarshalError(Exception):
-    pass
+    """Error when unmarshalling data from json to dataclasses."""
+
+
+class MarshalError(Exception):
+    """Error when marshalling data from dataclasses to json."""

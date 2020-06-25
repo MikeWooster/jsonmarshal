@@ -4,6 +4,8 @@ from enum import Enum
 from typing import List, Optional
 from uuid import UUID
 
+from jsonmarshal import json_field
+
 
 class EntityType(Enum):
     INDIVIDUAL = "INDIVIDUAL"
@@ -29,7 +31,7 @@ class Metadata:
     country_of_incorporation: CountryOfIncorperation
     name: str
     number: str
-    previous_names: Optional[List[PreviousName]]
+    previous_names: Optional[List[PreviousName]] = json_field(omitempty=True)
 
 
 class ProfileCategory(Enum):
@@ -57,8 +59,8 @@ class Tag:
 class FullName:
     family_name: str
     given_names: List[str]
-    title: Optional[str]
-    alt_family_names: Optional[List[str]]
+    title: Optional[str] = json_field(omitempty=True)
+    alt_family_names: Optional[List[str]] = json_field(omitempty=True)
 
 
 @dataclass
@@ -119,8 +121,8 @@ class TaskVariant:
     id: UUID
     task_type: TaskType
     alias: str
-    description: Optional[str]
-    name: Optional[str]
+    description: Optional[str] = json_field(omitempty=True)
+    name: Optional[str] = json_field(omitempty=True)
 
 
 @dataclass
@@ -135,14 +137,43 @@ class Task:
     variant: TaskVariant
 
 
+class UnresolvedEventType(Enum):
+    PEP_FLAG = "PEP_FLAG"
+    SANCTION_FLAG = "SANCTION_FLAG"
+    DOCUMENT_EXPIRY = "DOCUMENT_EXPIRY"
+    TRANSACTION_ALERT = "TRANSACTION_ALERT"
+    REVIEW_NEEDED = "REVIEW_NEEDED"
+    ADVERSE_MEDIA_FLAG = "ADVERSE_MEDIA_FLAG"
+    REFER_FLAG = "REFER_FLAG"
+    CHECK_EXPIRY = "CHECK_EXPIRY"
+    FRAUD_FLAG = "FRAUD_FLAG"
+
+
+@dataclass
+class TaskProgress:
+    completed_count: int
+    total_count: int
+
+
+class Status(Enum):
+    NORMAL = "NORMAL"
+
+
 @dataclass
 class LinkedProfile:
-    id: str
     category: ProfileCategory
-    role: Role
-    tags: List[Tag]
     collected_data: ProfileCollectedData
+    creation_date: datetime
+    display_name: str
+    has_associates: bool
+    has_collection_steps: bool
+    id: str
+    role: Role
+    status: Status
+    tags: List[Tag]
+    task_progress: TaskProgress
     tasks: List[Task]
+    unresolved_event_types: List[UnresolvedEventType]
 
 
 @dataclass
@@ -158,22 +189,22 @@ class Shareholding:
 class Officer:
     entity_type: EntityType
     linked_profile: LinkedProfile
-    merged_resolver_ids: List[UUID]
-    resolver_id: UUID
-    task_variant_ids: List[UUID]
-    unverified_task_variant_ids: List[UUID]
-    natures_of_control: Optional[List[str]]
-    shareholdings: Optional[List[Shareholding]]
+    merged_resolver_ids: List[UUID] = json_field(omitempty=True)
+    resolver_id: UUID = json_field(omitempty=True)
+    task_variant_ids: List[UUID] = json_field(omitempty=True)
+    unverified_task_variant_ids: List[UUID] = json_field(omitempty=True)
+    natures_of_control: Optional[List[str]] = json_field(omitempty=True)
+    shareholdings: Optional[List[Shareholding]] = json_field(omitempty=True)
 
 
 @dataclass
 class Officers:
-    directors: Optional[List[Officer]]
-    other: Optional[List[Officer]]
-    partners: Optional[List[Officer]]
-    resigned: Optional[List[Officer]]
-    secretaries: Optional[List[Officer]]
-    trustees: Optional[List[Officer]]
+    directors: Optional[List[Officer]] = json_field(omitempty=True)
+    other: Optional[List[Officer]] = json_field(omitempty=True)
+    partners: Optional[List[Officer]] = json_field(omitempty=True)
+    resigned: Optional[List[Officer]] = json_field(omitempty=True)
+    secretaries: Optional[List[Officer]] = json_field(omitempty=True)
+    trustees: Optional[List[Officer]] = json_field(omitempty=True)
 
 
 @dataclass
@@ -187,110 +218,12 @@ class ShareClass:
 @dataclass
 class OwnershipStructure:
     beneficial_owners: List[Officer]
-    share_classes: Optional[List[ShareClass]]
+    share_classes: Optional[List[ShareClass]] = json_field(omitempty=True)
 
 
 @dataclass
-class CollectedData:
+class Schema:
     entity_type: EntityType
     metadata: Metadata
     officers: Officers
     ownership_structure: OwnershipStructure
-
-
-linked_profile = LinkedProfile(
-    id="47c11334-9ffd-11ea-ac63-5a5397e86133",
-    category=ProfileCategory.APPLICANT,
-    role=Role.INDIVIDUAL_ASSOCIATED,
-    tags=[Tag(id=UUID("68ebdf5c-0bbd-11ea-b44e-563aaa5778a5"), is_automatic=False, name="PSC")],
-    collected_data=ProfileCollectedData(
-        entity_type=EntityType.INDIVIDUAL,
-        personal_details=PersonalDetails(
-            name=FullName(
-                family_name="Haigh", given_names=["Sebastian", "Thomas"], title=None, alt_family_names=None
-            )
-        ),
-    ),
-    tasks=[
-        Task(
-            creation_date=datetime(2020, 5, 27, 9, 34, 36),
-            id=UUID("47e42692-9ffd-11ea-8f2a-5a5397e86133"),
-            is_complete=True,
-            is_expired=False,
-            is_skipped=False,
-            state=TaskState.COMPLETED_PASS,
-            type=TaskType.INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE,
-            variant=TaskVariant(
-                alias="individual_assess_political_and_sanctions_exposuredefault",
-                id=UUID("990b6728-8e7e-11e8-baed-0a580a000380"),
-                task_type=TaskType.INDIVIDUAL_ASSESS_POLITICAL_AND_SANCTIONS_EXPOSURE,
-                description=None,
-                name=None,
-            ),
-        ),
-        Task(
-            creation_date=datetime(2020, 5, 27, 9, 34, 37),
-            id=UUID("47eba42e-9ffd-11ea-a080-5a5397e86133"),
-            is_complete=True,
-            is_expired=False,
-            is_skipped=False,
-            state=TaskState.COMPLETED_PASS,
-            type=TaskType.INDIVIDUAL_FRAUD_SCREENING,
-            variant=TaskVariant(
-                alias="individual_fraud_screeningdefault",
-                id=UUID("ca3680a4-5713-11ea-894c-22bc58dfbf7d"),
-                task_type=TaskType.INDIVIDUAL_FRAUD_SCREENING,
-                description=None,
-                name=None,
-            ),
-        ),
-    ],
-)
-
-
-expected = CollectedData(
-    entity_type=EntityType.COMPANY,
-    metadata=Metadata(
-        country_of_incorporation=CountryOfIncorperation.GBR,
-        name="Amazon Ltd",
-        number="10804351",
-        previous_names=None,
-    ),
-    officers=Officers(
-        directors=[
-            Officer(
-                entity_type=EntityType.INDIVIDUAL,
-                linked_profile=linked_profile,
-                merged_resolver_ids=[],
-                resolver_id=UUID("59a7749e-9ffd-11ea-8c58-56fdcde0987e"),
-                task_variant_ids=[UUID("fda0a2b6-d7aa-11e8-8298-0a580a00031c")],
-                unverified_task_variant_ids=[],
-                natures_of_control=None,
-                shareholdings=None,
-            )
-        ],
-        other=None,
-        partners=None,
-        resigned=None,
-        secretaries=None,
-        trustees=None,
-    ),
-    ownership_structure=OwnershipStructure(
-        beneficial_owners=[
-            Officer(
-                entity_type=EntityType.INDIVIDUAL,
-                linked_profile=linked_profile,
-                merged_resolver_ids=[],
-                resolver_id=UUID("59a7c354-9ffd-11ea-be4d-56fdcde0987e"),
-                task_variant_ids=[
-                    UUID("1098df9e-d7ab-11e8-990d-0a580a000562"),
-                    UUID("fda0a2b6-d7aa-11e8-8298-0a580a00031c"),
-                ],
-                unverified_task_variant_ids=[],
-                natures_of_control=[],
-                shareholdings=[],
-            )
-        ],
-        share_classes=None,
-    ),
-)

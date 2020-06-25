@@ -1,11 +1,12 @@
-import json as _json
 import os
 
-from tests.fixtures.collected_data.dataclass import CollectedData, expected
+from tests.fixtures.collected_data.schema import Schema
+from tests.fixtures.collected_data.unmarshalled import get_unmarshalled
 
 DIRNAME = os.path.dirname(__file__)
 
-with open(os.path.join(DIRNAME, "collected_data.json"), "r") as buf:
-    json = _json.loads(buf.read())
+marshalled = os.path.join(DIRNAME, "marshalled.json")
 
-__all__ = [json, expected, CollectedData]
+datetime_fmt = "%Y-%m-%d %H:%M:%S"
+
+__all__ = [marshalled, Schema, get_unmarshalled]

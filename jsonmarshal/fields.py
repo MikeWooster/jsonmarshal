@@ -1,12 +1,38 @@
 import dataclasses
+from typing import Any, Union
+
+from jsonmarshal.types import is_optional
 
 
-def json_field(*args, json: str = None, metadata: dict = None, **kwargs):
-    """Extend dataclass field with an additional json argument.
+def json_field(
+    *args: list, json: str = None, omitempty: bool = False, metadata: dict = None, **kwargs: dict
+) -> dataclasses.Field:
+    """Extend the python dataclass field with additional arguments.
 
-    This will allow the user to specify the format of the key in json.
+    The "json" option specifies the string key to be used when
+    marshalling/unmarshalling to/from json. When the "json" option
+    is not specified, the key on the dataclass will be used.
+
+    The "omitempty" option specifies that the field should be omitted
+    from marshalling if the field is typed as an `Optional[...]` value,
+    and is set to `None`.
+
+    E.g. A dataclass defining the field results in the following json:
+     - `my_value: str`  ->  {"my_value": ...}.
+     - `my_value: str = json_field(json="myValue")`  ->  {"myValue": ...}
+     - `my_value: Optional[str] = json_field(omitempty=True)`  ->  {} (when my_value = None)
     """
     if metadata is None:
         metadata = {}
+
     metadata["json"] = json
-    return dataclasses.field(*args, metadata=metadata, **kwargs)
+    metadata["omitempty"] = omitempty
+
+    return dataclasses.field(*args, metadata=metadata, **kwargs)  # type: ignore
+
+
+def omit_field(field: dataclasses.Field, value: Union[None, Any]) -> bool:
+    omit = field.metadata.get("omitempty", False)
+    if omit and value is None and is_optional(field.type):
+        return True
+    return False

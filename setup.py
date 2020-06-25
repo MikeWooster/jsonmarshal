@@ -4,7 +4,7 @@ import setuptools
 
 application_dependencies = []
 test_dependencies = ["pytest", "pytest-env", "pytest-cov", "pytz"]
-lint_dependencies = ["flake8", "flake8-docstrings", "black", "isort"]
+lint_dependencies = ["flake8", "flake8-docstrings", "black", "isort", "mypy"]
 docs_dependencies = []
 deploy_dependencies = ["requests", "twine"]
 dev_dependencies = test_dependencies + lint_dependencies + docs_dependencies + deploy_dependencies + ["ipdb"]
