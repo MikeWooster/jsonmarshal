@@ -1,7 +1,7 @@
 import dataclasses
 from typing import Any, Union
 
-from jsonmarshal.types import is_optional
+from jsonmarshal.types import _is_optional
 
 
 def json_field(
@@ -31,8 +31,18 @@ def json_field(
     return dataclasses.field(*args, metadata=metadata, **kwargs)  # type: ignore
 
 
-def omit_field(field: dataclasses.Field, value: Union[None, Any]) -> bool:
+def _get_json_key(field: dataclasses.Field) -> str:
+    """Given a json field, extract the key."""
+    if field.metadata.get("json"):
+        # The field is defined, we can just use this.
+        return field.metadata["json"]
+
+    return field.name
+
+
+def _omit_field(field: dataclasses.Field, value: Union[None, Any]) -> bool:
+    """Can the field be omitted when marshalling?"""
     omit = field.metadata.get("omitempty", False)
-    if omit and value is None and is_optional(field.type):
+    if omit and value is None and _is_optional(field.type):
         return True
     return False

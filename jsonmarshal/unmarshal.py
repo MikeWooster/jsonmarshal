@@ -5,26 +5,45 @@ from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 from jsonmarshal.exceptions import UnmarshalError
-from jsonmarshal.keys import get_json_key
-from jsonmarshal.types import PRIMITIVES, TYPE_MAP, Type, get_optional_type, is_optional, is_typing, is_union
+from jsonmarshal.fields import _get_json_key
+from jsonmarshal.types import (
+    _PRIMITIVES,
+    _TYPE_MAP,
+    _get_optional_type,
+    _is_optional,
+    _is_typing,
+    _is_union,
+    _Type,
+)
 
 T = TypeVar("T")
 
 
 # Special types that need further processing
 # None is included here as it also needs custom handling.
-CUSTOM_TYPES = {Type.NONETYPE, Type.UUID, Type.ENUM, Type.DATETIME, Type.DATE}
+_CUSTOM_TYPES = {_Type.NONETYPE, _Type.UUID, _Type.ENUM, _Type.DATETIME, _Type.DATE}
 
 
 def unmarshal(
     response: Any, schema: T, datetime_fmt: Optional[str] = None, date_fmt: Optional[str] = None,
 ) -> T:
+    """Unmarshal a response containing loaded json (json.load(s)) into a specified dataclass schema.
+
+    The "datetime_fmt" option allows the user to specify the format to
+    use when unmarshalling a string into a datetime object.
+
+    The "date_fmt" option allows the user to specify the format to use
+    when unmarshalling a string into a date object.
+
+    Both "datetime_fmt" and "date_fmt" options use the strftime/strptime behaviour:
+    https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
+    """
     unmarshaller = _Unmarshaller(response, schema, datetime_fmt, date_fmt)
     return unmarshaller.unmarshal()
 
 
 @dataclasses.dataclass
-class ResultContainer:
+class _ResultContainer:
     data: Any
     schema: Any
     parent: str
@@ -32,20 +51,20 @@ class ResultContainer:
     parent_path: str
     cleaned: bool = False
     unmarshalled: bool = False
-    _schema_type: Type = Type.NOT_SET
+    _schema_type: _Type = _Type.NOT_SET
 
     @property
-    def schema_type(self) -> Type:
+    def schema_type(self) -> _Type:
         # Return the primitive python type for this item
-        if self._schema_type is Type.NOT_SET:
-            self._schema_type = get_type(self.schema, self.data)
+        if self._schema_type is _Type.NOT_SET:
+            self._schema_type = _get_type(self.schema, self.data)
         return self._schema_type
 
     @property
     def inner_schema(self) -> type:
-        if is_union(self.schema):
+        if _is_union(self.schema):
             # If this is a union, we need to get the valid part of that union.
-            schema = get_optional_type(self.schema)
+            schema = _get_optional_type(self.schema)
         else:
             schema = self.schema
 
@@ -64,7 +83,7 @@ class ResultContainer:
         if self.cleaned:
             return
 
-        if self.schema_type in CUSTOM_TYPES:
+        if self.schema_type in _CUSTOM_TYPES:
             # Special types that don't get cleaned automatically
             return
 
@@ -72,7 +91,7 @@ class ResultContainer:
             f"Invalid schema. schema = {self.schema}, data = '{self.data}' ({type(self.data)}) "
             f"at location = {self.parent}"
         )
-        if TYPE_MAP[type(self.data)] != self.schema_type:
+        if _TYPE_MAP[type(self.data)] != self.schema_type:
             raise UnmarshalError(errmsg)
 
 
@@ -80,20 +99,20 @@ class _Unmarshaller:
     def __init__(
         self, response: Any, schema: Any, datetime_fmt: Optional[str] = None, date_fmt: Optional[str] = None,
     ) -> None:
-        self.result = [ResultContainer(data=response, schema=schema, parent="", parent_path="", path="")]
+        self.result = [_ResultContainer(data=response, schema=schema, parent="", parent_path="", path="")]
         self.datetime_fmt = datetime_fmt
         self.date_fmt = date_fmt
-        self.dump: List[ResultContainer] = []
-        self.processors: Dict[Any, Callable[[ResultContainer], None]] = {
-            Type.LIST: self.process_list,
-            Type.DICT: self.process_dict,
-            Type.ENUM: self.process_enum,
-            Type.UUID: self.process_uuid,
-            Type.DATETIME: self.process_datetime,
-            Type.DATE: self.process_date,
+        self.dump: List[_ResultContainer] = []
+        self.processors: Dict[Any, Callable[[_ResultContainer], None]] = {
+            _Type.LIST: self.process_list,
+            _Type.DICT: self.process_dict,
+            _Type.ENUM: self.process_enum,
+            _Type.UUID: self.process_uuid,
+            _Type.DATETIME: self.process_datetime,
+            _Type.DATE: self.process_date,
         }
         # Add each primitive individually
-        for t in PRIMITIVES:
+        for t in _PRIMITIVES:
             self.processors[t] = self.process_primitive
 
     def unmarshal(self) -> Any:
@@ -112,12 +131,12 @@ class _Unmarshaller:
 
         return item.data
 
-    def get_item(self) -> ResultContainer:
+    def get_item(self) -> _ResultContainer:
         item = self.result.pop()
         item.validate_schema()
         return item
 
-    def process_list(self, item: ResultContainer) -> None:
+    def process_list(self, item: _ResultContainer) -> None:
         if item.cleaned is False:
             item = self._clean_list(item)
         else:
@@ -128,13 +147,13 @@ class _Unmarshaller:
         # Put original (now empty item) back onto the result queue
         self.result.append(item)
 
-    def _clean_list(self, item: ResultContainer) -> ResultContainer:
+    def _clean_list(self, item: _ResultContainer) -> _ResultContainer:
         index = 0
         while item.data:
             # Remove the element from the data (in order)
             elem = item.data.pop(0)
             self.dump.append(
-                ResultContainer(
+                _ResultContainer(
                     data=elem,
                     schema=item.inner_schema,
                     parent=item.parent,
@@ -147,7 +166,7 @@ class _Unmarshaller:
         item.cleaned = True
         return item
 
-    def process_dict(self, item: ResultContainer) -> None:
+    def process_dict(self, item: _ResultContainer) -> None:
         if not item.cleaned:
             # Go through each known field and fix the keys in the original dictionary
             item = self.clean_item(item)
@@ -159,7 +178,7 @@ class _Unmarshaller:
 
         self.result.append(item)
 
-    def clean_item(self, item: ResultContainer) -> ResultContainer:
+    def clean_item(self, item: _ResultContainer) -> _ResultContainer:
         # Clean up the item (only called for dicts)
         for schema_key, field in item.schema_fields.items():
             json_key = self.get_json_key_for_item(field, item)
@@ -186,7 +205,7 @@ class _Unmarshaller:
 
         for data_key, v in item.data.items():
             schema_type = item.schema.__annotations__[data_key]
-            child = ResultContainer(
+            child = _ResultContainer(
                 data=v,
                 schema=schema_type,
                 parent=data_key,
@@ -194,7 +213,7 @@ class _Unmarshaller:
                 path=f"{item.path}.{data_key}",
             )
 
-            if child.schema_type not in PRIMITIVES:
+            if child.schema_type not in _PRIMITIVES:
                 self.dump.append(child)
             else:
                 # We want to validate that the primitives are actually using the specified data
@@ -203,15 +222,15 @@ class _Unmarshaller:
         item.cleaned = True
         return item
 
-    def process_primitive(self, item: ResultContainer) -> None:
+    def process_primitive(self, item: _ResultContainer) -> None:
         # Just need to set the cleaned flag for a primtive and put it back on the list
         item.cleaned = True
         item.unmarshalled = True
         self.result.append(item)
 
-    def process_enum(self, item: ResultContainer) -> None:
-        if is_union(item.schema):
-            schema = get_optional_type(item.schema)
+    def process_enum(self, item: _ResultContainer) -> None:
+        if _is_union(item.schema):
+            schema = _get_optional_type(item.schema)
         else:
             schema = item.schema
         try:
@@ -225,9 +244,9 @@ class _Unmarshaller:
         item.unmarshalled = True
         self.result.append(item)
 
-    def process_uuid(self, item: ResultContainer) -> None:
-        if is_union(item.schema):
-            schema = get_optional_type(item.schema)
+    def process_uuid(self, item: _ResultContainer) -> None:
+        if _is_union(item.schema):
+            schema = _get_optional_type(item.schema)
         else:
             schema = item.schema
         try:
@@ -240,7 +259,7 @@ class _Unmarshaller:
         item.unmarshalled = True
         self.result.append(item)
 
-    def process_datetime(self, item: ResultContainer) -> None:
+    def process_datetime(self, item: _ResultContainer) -> None:
         data = item.data
         if self.datetime_fmt:
             # Prioritise the users specified time format.
@@ -253,7 +272,7 @@ class _Unmarshaller:
         item.unmarshalled = True
         self.result.append(item)
 
-    def process_date(self, item: ResultContainer) -> None:
+    def process_date(self, item: _ResultContainer) -> None:
         if self.date_fmt:
             # Prioritise the users specified date format.
             v = datetime.strptime(item.data, self.date_fmt).date()
@@ -289,12 +308,12 @@ class _Unmarshaller:
                 self.dump.append(prev)
                 continue
 
-            if prev.schema_type == Type.LIST:
+            if prev.schema_type == _Type.LIST:
                 prev.data.append(item.data)
                 self.result.append(prev)
                 continue
 
-            if prev.schema_type == Type.DICT:
+            if prev.schema_type == _Type.DICT:
                 # Put the object on the parents data key then back onto the result queue
                 prev.data[item.parent] = item.data
                 # prev has been updated so needs further processing
@@ -310,10 +329,10 @@ class _Unmarshaller:
             self.result.append(self.dump.pop())
 
     @staticmethod
-    def get_json_key_for_item(field: dataclasses.Field, item: ResultContainer) -> str:
-        json_key = get_json_key(field)
+    def get_json_key_for_item(field: dataclasses.Field, item: _ResultContainer) -> str:
+        json_key = _get_json_key(field)
 
-        if json_key in item.data or is_field_optional(field):
+        if json_key in item.data or _is_field_optional(field):
             return json_key
 
         keys = list(item.data.keys()) if type(item.data) is dict else item.data
@@ -323,37 +342,37 @@ class _Unmarshaller:
         )
 
 
-def is_field_optional(field: dataclasses.Field) -> bool:
-    return is_optional(field.type)
+def _is_field_optional(field: dataclasses.Field) -> bool:
+    return _is_optional(field.type)
 
 
-def get_type(schema: Any, data: Any) -> Type:
+def _get_type(schema: Any, data: Any) -> _Type:
 
     if dataclasses.is_dataclass(schema):
-        return Type.DICT
+        return _Type.DICT
 
     if inspect.isclass(schema) and issubclass(schema, Enum):
-        return Type.ENUM
+        return _Type.ENUM
 
     if inspect.isclass(schema) and issubclass(schema, datetime):
-        return Type.DATETIME
+        return _Type.DATETIME
 
     if inspect.isclass(schema) and issubclass(schema, date):
         # Date check must come after datetime as datetime is a subclass of date
-        return Type.DATE
+        return _Type.DATE
 
-    if is_union(schema):
+    if _is_union(schema):
         _validate_union_is_optional(schema)
         return _get_matching_union_type(schema, data)
 
-    if is_typing(schema):
+    if _is_typing(schema):
         # The data hasn't matched any previous check.
         # assuming it is a typing.* type which can be determined
         # from the __origin__ attribute
         schema = schema.__origin__
 
-    if schema in TYPE_MAP:
-        return TYPE_MAP[schema]
+    if schema in _TYPE_MAP:
+        return _TYPE_MAP[schema]
 
     raise UnmarshalError(f"Schema type '{schema}' is not currently supported.")
 
@@ -361,19 +380,19 @@ def get_type(schema: Any, data: Any) -> Type:
 def _validate_union_is_optional(schema: Any) -> None:
     # Currently only supporting unions that denote Optional types.
     # Raising error if this is not the case
-    if not is_optional(schema):
+    if not _is_optional(schema):
         raise UnmarshalError(
             "Schemas defined with unions containing anything other than optional (NoneType + other) "
             f"fields are not currently supported. Got {schema}  with  {schema.__args__}"
         )
 
 
-def _get_matching_union_type(schema: None, data: None) -> Type:
+def _get_matching_union_type(schema: None, data: None) -> _Type:
     # Extract the expected type from the union.
     # As we only allow Optional types, we can safely extract the non-optional
     # type when the data is non-null
     if data is None:
-        return Type.NONETYPE
+        return _Type.NONETYPE
 
-    t = get_optional_type(schema)
-    return get_type(t, data)
+    t = _get_optional_type(schema)
+    return _get_type(t, data)

@@ -15,7 +15,7 @@ JsonType = Union[str, int, float, dict, list]
 NoneType = type(None)
 
 
-class Type(Enum):
+class _Type(Enum):
     """Enum of types."""
 
     NOT_SET = "NOT_SET"
@@ -33,26 +33,26 @@ class Type(Enum):
     DATE = "DATE"
 
 
-TYPE_MAP = {
-    None: Type.NONETYPE,
-    NoneType: Type.NONETYPE,
-    str: Type.STRING,
-    int: Type.INT,
-    float: Type.FLOAT,
-    bool: Type.BOOL,
-    datetime: Type.DATETIME,
-    date: Type.DATE,
-    UUID: Type.UUID,
-    dict: Type.DICT,
-    list: Type.LIST,
+_TYPE_MAP = {
+    None: _Type.NONETYPE,
+    NoneType: _Type.NONETYPE,
+    str: _Type.STRING,
+    int: _Type.INT,
+    float: _Type.FLOAT,
+    bool: _Type.BOOL,
+    datetime: _Type.DATETIME,
+    date: _Type.DATE,
+    UUID: _Type.UUID,
+    dict: _Type.DICT,
+    list: _Type.LIST,
 }
 
-PRIMITIVES = {Type.STRING, Type.INT, Type.FLOAT, Type.BOOL, Type.NONETYPE}
+_PRIMITIVES = {_Type.STRING, _Type.INT, _Type.FLOAT, _Type.BOOL, _Type.NONETYPE}
 
 
-def is_optional(t: Any) -> bool:
+def _is_optional(t: Any) -> bool:
     """Determine if this type is a defined Optional[...] type."""
-    if not is_union(t):
+    if not _is_union(t):
         return False
 
     args = get_args(t)
@@ -62,17 +62,17 @@ def is_optional(t: Any) -> bool:
     return True
 
 
-def is_union(t: Any) -> bool:
+def _is_union(t: Any) -> bool:
     """Determine if this type is defined as a Union[...] type."""
     return get_origin(t) is Union
 
 
-def get_optional_type(t: Any) -> Any:
+def _get_optional_type(t: Any) -> Any:
     """Given a Optional type, return the type that is non-null"""
     valid = [t for t in get_args(t) if t is not NoneType]
     return valid[0]
 
 
-def is_typing(t: Any) -> bool:
+def _is_typing(t: Any) -> bool:
     """Determine if the type `t` is of `typing` origin."""
     return get_origin(t) is not None
