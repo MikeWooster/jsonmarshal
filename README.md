@@ -63,8 +63,11 @@ class Item:
 
 item = Item(first_key: "hello", second_key: 100)
 
-marshal(item)
+data = marshal(item)
 {"first_key": "hello", "second_key": 100}
+
+unmarshal(data, Item)
+Item(first_key: "hello", second_key: 100)
 ```
 
 A dataclass defining the json option:
@@ -76,8 +79,11 @@ class Item:
 
 item = Item(first_key: "hello", second_key: 100)
 
-marshal(item)
+data = marshal(item)
 {"firstKey": "hello", "secondKey": 100}
+
+unmarshal(data, Item)
+Item(first_key: "hello", second_key: 100)
 ```
 
 A dataclass defining the omitempty option:
@@ -89,8 +95,11 @@ class Item:
 
 item = Item(first_key: None, second_key: 100)
 
-marshal(item)
+data = marshal(item)
 {"second_key": 100}
+
+unmarshal(data, Item)
+Item(first_key: None, second_key: 100)
 ```
 
 A dataclass supporting Enums:
@@ -106,8 +115,11 @@ class Item:
 
 item = Item(first_key: Colour.RED", second_key: Colour.GREEN)
 
-marshal(item)
+data = marshal(item)
 {"first_key": "RED", "second_key": "GREEN"}
+
+unmarshal(data, Item)
+Item(first_key: Colour.RED", second_key: Colour.GREEN)
 ```
 
 A dataclass with dates/datetimes:
@@ -119,8 +131,11 @@ class Item:
 
 item = Item(first_key: datetime(2020, 6, 11, 14, 32), second_key: date(2020, 5, 14))
 
-marshal(item)
+data = marshal(item)
 {"first_key": "2020-06-11T14:32:00", "second_key": "2020-05-14"}
+
+unmarshal(data, Item)
+Item(first_key: datetime(2020, 6, 11, 14, 32), second_key: date(2020, 5, 14))
 ```
 
 A dataclass with dates/datetime supporting custom formats:
@@ -132,8 +147,11 @@ class Item:
 
 item = Item(first_key: datetime(2020, 6, 11, 14, 32), second_key: date(2020, 5, 14))
 
-marshal(item, datetime_fmt="%d %b %Y %H:%M", date_fmt="%d %b %Y")
+data = marshal(item, datetime_fmt="%d %b %Y %H:%M", date_fmt="%d %b %Y")
 {"first_key": "11 Jun 2020 14:32", "second_key": "14 Jun 2020"}
+
+unmarshal(data, Item)
+Item(first_key: datetime(2020, 6, 11, 14, 32), second_key: date(2020, 5, 14))
 ```
 
 UUIDs get automatically marshalled to UUID type
@@ -144,6 +162,9 @@ class Item:
 
 item = Item(first_key: UUID("8b302ccb-fd97-4ce0-823a-eddd9ec1247d"))
 
-marshal(item)
+data = marshal(item)
 {"first_key": "8b302ccb-fd97-4ce0-823a-eddd9ec1247d"}
+
+unmarshal(data, Item)
+Item(first_key: UUID("8b302ccb-fd97-4ce0-823a-eddd9ec1247d"))
 ```
