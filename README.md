@@ -113,7 +113,7 @@ class Item:
     first_key: Colour
     second_key: Colour
 
-item = Item(first_key: Colour.RED", second_key: Colour.GREEN)
+item = Item(first_key: Colour.RED, second_key: Colour.GREEN)
 
 data = marshal(item)
 {"first_key": "RED", "second_key": "GREEN"}
