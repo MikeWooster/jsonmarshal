@@ -7,8 +7,8 @@ try:
     from typing import get_args, get_origin  # type: ignore
 except ImportError:  # pragma: no cover
     # get_args/get_origin only available in py 3.8+
-    from jsonmarshal.utils.typing import _local_get_origin as get_origin  # type: ignore
     from jsonmarshal.utils.typing import _local_get_args as get_args  # type: ignore
+    from jsonmarshal.utils.typing import _local_get_origin as get_origin  # type: ignore
 
 
 JsonType = Union[str, int, float, dict, list]

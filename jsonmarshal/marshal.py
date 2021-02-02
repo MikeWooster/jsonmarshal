@@ -48,7 +48,10 @@ class _ResultContainer:
 
 class _Marshaller:
     def __init__(
-        self, result: Any, datetime_fmt: Optional[str] = None, date_fmt: Optional[str] = None,
+        self,
+        result: Any,
+        datetime_fmt: Optional[str] = None,
+        date_fmt: Optional[str] = None,
     ) -> None:
         self.result = [_ResultContainer(data=result, parent_key="", parent_path="", path="")]
         self.datetime_fmt = datetime_fmt
@@ -118,7 +121,10 @@ class _Marshaller:
             else:
                 # value needs further marshalling. add to dump for later processing.
                 r = _ResultContainer(
-                    data=value, parent_key=json_key, parent_path=item.path, path=f"{item.path}.{json_key}",
+                    data=value,
+                    parent_key=json_key,
+                    parent_path=item.path,
+                    path=f"{item.path}.{json_key}",
                 )
                 self.dump.append(r)
 

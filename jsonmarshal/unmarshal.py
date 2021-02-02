@@ -25,7 +25,10 @@ _CUSTOM_TYPES = {_Type.NONETYPE, _Type.UUID, _Type.ENUM, _Type.DATETIME, _Type.D
 
 
 def unmarshal(
-    response: Any, schema: T, datetime_fmt: Optional[str] = None, date_fmt: Optional[str] = None,
+    response: Any,
+    schema: T,
+    datetime_fmt: Optional[str] = None,
+    date_fmt: Optional[str] = None,
 ) -> T:
     """Unmarshal a response containing loaded json (json.load(s)) into a specified dataclass schema.
 
@@ -97,7 +100,11 @@ class _ResultContainer:
 
 class _Unmarshaller:
     def __init__(
-        self, response: Any, schema: Any, datetime_fmt: Optional[str] = None, date_fmt: Optional[str] = None,
+        self,
+        response: Any,
+        schema: Any,
+        datetime_fmt: Optional[str] = None,
+        date_fmt: Optional[str] = None,
     ) -> None:
         self.result = [_ResultContainer(data=response, schema=schema, parent="", parent_path="", path="")]
         self.datetime_fmt = datetime_fmt
